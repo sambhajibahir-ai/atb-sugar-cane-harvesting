@@ -2589,10 +2589,17 @@ _तयार केले: ऊस तोडणी डिजिटल डाय�
     }
 
     function registerServiceWorker() {
-      if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
-        navigator.serviceWorker.register('./sw.js')
-          .then(reg => console.log('SW Registered for Sugarcane Harvester PWA:', reg.scope))
-          .catch(err => console.log('SW Registration skipped/failed:', err));
+      if ('serviceWorker' in navigator && (window.location.protocol.startsWith('http') || window.location.protocol === 'https:')) {
+        navigator.serviceWorker.register('/sw.js', { scope: '/' })
+          .then(reg => {
+            console.log('SW Registered for Sugarcane Harvester PWA:', reg.scope);
+            reg.update();
+          })
+          .catch(err => {
+            navigator.serviceWorker.register('./sw.js')
+              .then(reg => console.log('SW Registered fallback:', reg.scope))
+              .catch(e => console.log('SW Registration skipped/failed:', e));
+          });
       }
     }
 
