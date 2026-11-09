@@ -1,0 +1,2603 @@
+<!DOCTYPE html>
+<html lang="mr" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ऊस तोडणी मशीन हिशोब व नफा-तोटा | Sugarcane Harvester P&L</title>
+  <meta name="description" content="Sugarcane Harvester Machine Operations & P&L Book (ऊस तोडणी मशीन हिशोब व नफा-तोटा अॅप) - 100% Offline PWA">
+  <meta name="theme-color" content="#0f172a">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" type="image/svg+xml" href="./icon-192.svg">
+  <link rel="apple-touch-icon" href="./icon-192.svg">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              dark: '#0a0f1d',
+              surface: '#0f172a',
+              card: '#1e293b',
+              border: '#334155',
+              hover: '#283548'
+            },
+            agri: {
+              green: '#10b981',
+              greenDark: '#047857',
+              amber: '#f59e0b',
+              amberDark: '#b45309',
+              crimson: '#ef4444',
+              crimsonDark: '#b91c1c',
+              blue: '#0284c7'
+            }
+          },
+          fontFamily: {
+            sans: ['system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'Noto Sans Devanagari', 'Mangal', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Mobile-first enhancements & smooth touch scrolling */
+    html, body {
+      overscroll-behavior-y: contain;
+      -webkit-tap-highlight-color: transparent;
+      font-feature-settings: "tnum" 1;
+    }
+    input, select, textarea, button {
+      touch-action: manipulation;
+    }
+    /* Custom scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 9999px;
+    }
+    .safe-bottom {
+      padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 5rem);
+    }
+    .badge-pulse {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans select-none md:select-auto">
+
+  <!-- ================= TOP HEADER BAR ================= -->
+  <header class="sticky top-0 z-40 bg-slate-900/95 backdrop-blur border-b border-slate-800 px-3 py-2.5 sm:px-6 sm:py-3 shadow-md">
+    <div class="max-w-6xl mx-auto flex items-center justify-between gap-2">
+      <!-- Brand & Machine Name -->
+      <div class="flex items-center gap-2.5 min-w-0">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-600 to-emerald-900 flex items-center justify-center shadow-lg shadow-emerald-950 flex-shrink-0 border border-emerald-500/30">
+          <!-- Harvester Icon -->
+          <svg class="w-6 h-6 text-emerald-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 14h16M4 14l2-6h12l2 6M6 18a2 2 0 100-4 2 2 0 000 4zm12 0a2 2 0 100-4 2 2 0 000 4z"/>
+            <path d="M10 8V4M14 8V4M3 14h18v4H3z"/>
+          </svg>
+        </div>
+        <div class="truncate">
+          <div class="flex items-center gap-1.5">
+            <h1 id="headerMachineName" class="text-sm sm:text-base font-bold text-white tracking-tight truncate">
+              John Deere 3522 (MH-12)
+            </h1>
+            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-950 text-emerald-400 border border-emerald-800/60">
+              हंगाम २०२६-२७
+            </span>
+          </div>
+          <p class="text-[11px] text-slate-400 truncate flex items-center gap-1">
+            <span>ऊस तोडणी हिशोब</span>
+            <span class="text-slate-600">•</span>
+            <span>Sugarcane Harvester P&L</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Action Pill & Status -->
+      <div class="flex items-center gap-2 flex-shrink-0">
+        <!-- Offline / Sync Indicator -->
+        <div class="hidden sm:flex items-center gap-1.5 bg-slate-800/80 px-2.5 py-1 rounded-full border border-slate-700/60 text-xs">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 badge-pulse"></span>
+          <span class="text-slate-300 font-medium text-[11px]">१००% ऑफलाइन / 100% Offline</span>
+        </div>
+
+        <!-- Quick WhatsApp Share Header Button -->
+        <button onclick="openWhatsAppModal()" title="व्हॉट्सॲपवर पाठवा / Share on WhatsApp" class="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg shadow-md transition active:scale-95 border border-emerald-400/30">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+          </svg>
+          <span class="hidden xs:inline">हिशोब पाठवा</span>
+          <span class="text-[10px] opacity-80">(Share)</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= MAIN CONTENT CONTAINER ================= -->
+  <main class="flex-1 max-w-6xl w-full mx-auto p-3 sm:p-5 md:p-6 space-y-5 safe-bottom">
+
+    <!-- ================= TOP KPI DASHBOARD (Live P&L Summary) ================= -->
+    <section id="sectionDashboard" class="space-y-4">
+      
+      <!-- HERO P&L PROMINENT BANNER -->
+      <div id="netProfitHeroCard" class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border border-slate-700/80 p-4 sm:p-6 shadow-xl">
+        <div class="absolute -right-6 -top-6 w-36 h-36 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
+        <div class="absolute -left-6 -bottom-6 w-36 h-36 bg-amber-500/10 rounded-full blur-2xl pointer-events-none"></div>
+        
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                Live ताळेबंद / Live P&L
+              </span>
+              <span id="pnlStatusBadge" class="text-xs px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 font-semibold border border-emerald-800">
+                नफ्यात (Profitable)
+              </span>
+            </div>
+            <p class="text-slate-400 text-xs sm:text-sm mt-1">निव्वळ नफा / तोटा (Net Profit / Loss)</p>
+            <div class="flex items-baseline gap-3 mt-1">
+              <h2 id="kpiNetProfit" class="text-2xl sm:text-4xl font-extrabold text-emerald-400 tracking-tight">
+                ₹ 0
+              </h2>
+              <span id="kpiMarginPercent" class="text-xs sm:text-sm font-semibold text-emerald-300 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-700/50">
+                0% मार्जिन
+              </span>
+            </div>
+          </div>
+
+          <!-- Quick Income vs Expense Bar Chart Preview -->
+          <div class="bg-slate-950/70 p-3 sm:p-4 rounded-xl border border-slate-800/80 w-full md:w-80 space-y-2">
+            <div class="flex justify-between text-xs">
+              <span class="text-slate-400">उत्पन्न vs खर्च (Income vs Expense)</span>
+              <span id="kpiExpenseRatio" class="text-amber-400 font-mono font-medium">0% खर्च प्रमाण</span>
+            </div>
+            <div class="w-full h-3 bg-slate-800 rounded-full overflow-hidden flex">
+              <div id="barDiesel" class="bg-amber-500 h-full transition-all duration-500" title="Diesel" style="width: 0%"></div>
+              <div id="barSpares" class="bg-orange-500 h-full transition-all duration-500" title="Spares" style="width: 0%"></div>
+              <div id="barLabor" class="bg-rose-500 h-full transition-all duration-500" title="Labor" style="width: 0%"></div>
+              <div id="barTractor" class="bg-purple-500 h-full transition-all duration-500" title="Tractor" style="width: 0%"></div>
+              <div id="barNetProfit" class="bg-emerald-500 h-full transition-all duration-500" title="Net Margin" style="width: 0%"></div>
+            </div>
+            <div class="flex justify-between items-center text-[10px] text-slate-400 pt-0.5">
+              <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span> नफा</span>
+              <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-amber-500 inline-block"></span> डिझेल</span>
+              <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-orange-500 inline-block"></span> मेंटेनन्स</span>
+              <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-rose-500 inline-block"></span> मजुरी/उचल</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 MAIN METRIC CARDS -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        
+        <!-- CARD 1: Total Cane Harvested -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 sm:p-4 shadow-sm hover:border-slate-700 transition">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] sm:text-xs font-semibold text-emerald-400 uppercase tracking-wide">
+              एकूण गाळप / Tonnage
+            </span>
+            <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
+              </svg>
+            </div>
+          </div>
+          <div class="mt-2">
+            <h3 id="kpiTotalTons" class="text-xl sm:text-2xl font-bold text-white tracking-tight">
+              0 <span class="text-xs font-normal text-slate-400">टन (MT)</span>
+            </h3>
+            <p id="kpiSlipCount" class="text-[11px] text-slate-400 mt-0.5">
+              0 काटा पावत्या (Slips)
+            </p>
+          </div>
+        </div>
+
+        <!-- CARD 2: Total Revenue Earned -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 sm:p-4 shadow-sm hover:border-slate-700 transition">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] sm:text-xs font-semibold text-emerald-400 uppercase tracking-wide">
+              एकूण बिल / Revenue
+            </span>
+            <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold">
+              ₹
+            </div>
+          </div>
+          <div class="mt-2">
+            <h3 id="kpiTotalRevenue" class="text-xl sm:text-2xl font-bold text-white tracking-tight">
+              ₹ 0
+            </h3>
+            <div class="flex items-center justify-between text-[11px] text-slate-400 mt-0.5">
+              <span id="kpiPendingAmount" class="text-amber-400">येणे: ₹ 0</span>
+              <span id="kpiPaidAmount" class="text-slate-400">जमा: ₹ 0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 3: Total Expenses -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 sm:p-4 shadow-sm hover:border-slate-700 transition">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] sm:text-xs font-semibold text-rose-400 uppercase tracking-wide">
+              एकूण खर्च / Expenses
+            </span>
+            <div class="w-8 h-8 rounded-lg bg-rose-500/10 text-rose-400 flex items-center justify-center">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+              </svg>
+            </div>
+          </div>
+          <div class="mt-2">
+            <h3 id="kpiTotalExpenses" class="text-xl sm:text-2xl font-bold text-rose-400 tracking-tight">
+              ₹ 0
+            </h3>
+            <p id="kpiExpenseBreakdownSmall" class="text-[11px] text-slate-400 mt-0.5 truncate">
+              डिझेल: ₹0 • स्पेअर: ₹0
+            </p>
+          </div>
+        </div>
+
+        <!-- CARD 4: Machine Running Hours -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 sm:p-4 shadow-sm hover:border-slate-700 transition">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] sm:text-xs font-semibold text-amber-400 uppercase tracking-wide">
+              मशीन अवर्स / Hours Run
+            </span>
+            <div class="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+            </div>
+          </div>
+          <div class="mt-2">
+            <h3 id="kpiTotalHours" class="text-xl sm:text-2xl font-bold text-white tracking-tight">
+              0 <span class="text-xs font-normal text-slate-400">तास (Hrs)</span>
+            </h3>
+            <p id="kpiTonsPerHour" class="text-[11px] text-slate-400 mt-0.5">
+              0 टन / तास (Tons/Hr)
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ================= DIESEL & EFFICIENCY BENCHMARKS ================= -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-5 shadow-sm">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-800/80">
+          <div class="flex items-center gap-2">
+            <div class="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 2v20h18V2H3zm15 11h-3V7h3v6z"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-sm font-bold text-white">इंधन कार्यक्षमता व सरासरी / Diesel Efficiency</h3>
+              <p class="text-[11px] text-slate-400">प्रति टन व प्रति तास डिझेल वापर (Fuel Consumption Index)</p>
+            </div>
+          </div>
+          <span id="fuelHealthBadge" class="text-[11px] font-semibold px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800">
+            उत्कृष्ट सरासरी (Optimal)
+          </span>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4">
+          <!-- Metric 1: L / Ton -->
+          <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800/80">
+            <p class="text-[11px] text-slate-400">प्रति टन डिझेल (L/Ton)</p>
+            <p id="kpiDieselPerTon" class="text-lg sm:text-xl font-bold text-amber-400 mt-1">0.00 <span class="text-xs text-slate-400">L/T</span></p>
+            <p class="text-[10px] text-slate-500 mt-0.5">आदर्श: ४.५ - ६.० लिटर</p>
+          </div>
+
+          <!-- Metric 2: L / Hour -->
+          <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800/80">
+            <p class="text-[11px] text-slate-400">प्रति तास डिझेल (L/Hr)</p>
+            <p id="kpiDieselPerHour" class="text-lg sm:text-xl font-bold text-amber-400 mt-1">0.00 <span class="text-xs text-slate-400">L/Hr</span></p>
+            <p class="text-[10px] text-slate-500 mt-0.5">आदर्श: २२ - २८ लिटर</p>
+          </div>
+
+          <!-- Metric 3: Total Fuel Burned -->
+          <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800/80">
+            <p class="text-[11px] text-slate-400">एकूण डिझेल (Total Fuel)</p>
+            <p id="kpiTotalLiters" class="text-lg sm:text-xl font-bold text-white mt-1">0 <span class="text-xs text-slate-400">लिटर</span></p>
+            <p id="kpiDieselTotalCost" class="text-[10px] text-amber-400 mt-0.5">रक्कम: ₹0</p>
+          </div>
+
+          <!-- Metric 4: Cost Per Ton -->
+          <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800/80">
+            <p class="text-[11px] text-slate-400">एकूण खर्च / टन (Cost/Ton)</p>
+            <p id="kpiCostPerTon" class="text-lg sm:text-xl font-bold text-rose-400 mt-1">₹ 0.00</p>
+            <p id="kpiProfitPerTon" class="text-[10px] text-emerald-400 mt-0.5">नफा: ₹0 / टन</p>
+          </div>
+        </div>
+
+        <!-- Expense Category Breakdown Chips -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mt-4 pt-3 border-t border-slate-800/80">
+          <div class="flex items-center gap-2 p-2 rounded-lg bg-slate-800/40 border border-slate-700/40">
+            <span class="w-3 h-3 rounded-full bg-amber-500 flex-shrink-0"></span>
+            <div class="min-w-0">
+              <p class="text-[10px] text-slate-400">डिझेल (Diesel)</p>
+              <p id="subExpenseDiesel" class="text-xs font-bold text-white">₹0</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 p-2 rounded-lg bg-slate-800/40 border border-slate-700/40">
+            <span class="w-3 h-3 rounded-full bg-orange-500 flex-shrink-0"></span>
+            <div class="min-w-0">
+              <p class="text-[10px] text-slate-400">स्पेअर्स व मेंटेनन्स</p>
+              <p id="subExpenseSpares" class="text-xs font-bold text-white">₹0</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 p-2 rounded-lg bg-slate-800/40 border border-slate-700/40">
+            <span class="w-3 h-3 rounded-full bg-rose-500 flex-shrink-0"></span>
+            <div class="min-w-0">
+              <p class="text-[10px] text-slate-400">स्टाफ उचल / पगार</p>
+              <p id="subExpenseLabor" class="text-xs font-bold text-white">₹0</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 p-2 rounded-lg bg-slate-800/40 border border-slate-700/40">
+            <span class="w-3 h-3 rounded-full bg-purple-500 flex-shrink-0"></span>
+            <div class="min-w-0">
+              <p class="text-[10px] text-slate-400">ट्रॅक्टर / इनफिल्डर</p>
+              <p id="subExpenseTractor" class="text-xs font-bold text-white">₹0</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Action Buttons Row -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+        <button onclick="openSlipModal()" class="flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold p-3.5 rounded-xl shadow-lg shadow-emerald-950 transition active:scale-95 text-xs sm:text-sm border border-emerald-400/40">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path d="M12 4v16m8-8H4"/>
+          </svg>
+          <span>तोडणी नोंद (+Slip)</span>
+        </button>
+
+        <button onclick="openExpenseModal('diesel')" class="flex items-center justify-center gap-2 bg-amber-600 hover:bg-amber-500 text-white font-bold p-3.5 rounded-xl shadow-lg shadow-amber-950 transition active:scale-95 text-xs sm:text-sm border border-amber-400/40">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path d="M12 4v16m8-8H4"/>
+          </svg>
+          <span>डिझेल नोंद (+Diesel)</span>
+        </button>
+
+        <button onclick="openExpenseModal('spares')" class="flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-100 font-bold p-3.5 rounded-xl shadow transition active:scale-95 text-xs sm:text-sm border border-slate-700">
+          <svg class="w-5 h-5 text-orange-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>
+          </svg>
+          <span>स्पेअर्स खर्च (+Spares)</span>
+        </button>
+
+        <button onclick="openExpenseModal('labor')" class="flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-100 font-bold p-3.5 rounded-xl shadow transition active:scale-95 text-xs sm:text-sm border border-slate-700">
+          <svg class="w-5 h-5 text-rose-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 00-3-3.87m-4-12a4 4 0 010 7.75"/>
+          </svg>
+          <span>उचल / पगार (+Labor)</span>
+        </button>
+      </div>
+
+    </section>
+
+    <!-- ================= HARVESTING & WEIGHT SLIPS VIEW ================= -->
+    <section id="sectionSlips" class="space-y-4 hidden">
+      <!-- Top Bar with Search & Filters -->
+      <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between bg-slate-900 border border-slate-800 p-3.5 rounded-2xl">
+        <div class="flex items-center gap-2 flex-1">
+          <div class="relative flex-1">
+            <input type="text" id="slipSearchInput" oninput="renderSlipsList()" placeholder="पावती क्र. / शेतकरी / कारखाना शोधा..." class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500">
+            <span class="absolute right-3 top-2.5 text-slate-500">🔍</span>
+          </div>
+          <select id="slipFactoryFilter" onchange="renderSlipsList()" class="bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-emerald-500">
+            <option value="">सर्व कारखाने (All Factories)</option>
+          </select>
+          <select id="slipStatusFilter" onchange="renderSlipsList()" class="bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-emerald-500">
+            <option value="">सर्व स्थिती (All Status)</option>
+            <option value="pending">येणे बाकी (Pending)</option>
+            <option value="paid">जमा झाले (Paid)</option>
+          </select>
+        </div>
+
+        <button onclick="openSlipModal()" class="flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2.5 rounded-xl shadow transition active:scale-95 text-xs sm:text-sm border border-emerald-400/30 flex-shrink-0">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg>
+          <span>नवीन तोडणी पावती (+ Slip)</span>
+        </button>
+      </div>
+
+      <!-- Filter Totals Strip -->
+      <div id="slipFilterSummary" class="flex flex-wrap items-center justify-between text-xs px-2 text-slate-400">
+        <span>दाखवत आहे: <strong id="slipCountDisplay" class="text-white">0</strong> पावत्या</span>
+        <div class="flex gap-3">
+          <span>गाळप: <strong id="slipTonsDisplay" class="text-emerald-400">0.00</strong> टन</span>
+          <span>एकूण रक्कम: <strong id="slipTotalAmountDisplay" class="text-emerald-400">₹0</strong></span>
+          <span>बाकी: <strong id="slipPendingDisplay" class="text-amber-400">₹0</strong></span>
+        </div>
+      </div>
+
+      <!-- Slips Container (Card list on mobile, Table on desktop) -->
+      <div id="slipsContainer" class="space-y-3">
+        <!-- Rendered by JS -->
+      </div>
+    </section>
+
+    <!-- ================= EXPENSES & MAINTENANCE VIEW ================= -->
+    <section id="sectionExpenses" class="space-y-4 hidden">
+      <!-- Subcategory Tabs -->
+      <div class="flex overflow-x-auto gap-2 pb-1 scrollbar-none border-b border-slate-800">
+        <button onclick="switchExpenseSubTab('all')" id="expTab-all" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition whitespace-nowrap bg-emerald-600 text-white shadow">
+          सर्व खर्च (All Expenses)
+        </button>
+        <button onclick="switchExpenseSubTab('diesel')" id="expTab-diesel" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition whitespace-nowrap bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800">
+          ⛽ डिझेल नोंद (Diesel)
+        </button>
+        <button onclick="switchExpenseSubTab('spares')" id="expTab-spares" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition whitespace-nowrap bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800">
+          🛠 स्पेअर व दुरुस्ती (Spares)
+        </button>
+        <button onclick="switchExpenseSubTab('labor')" id="expTab-labor" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition whitespace-nowrap bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800">
+          👷 उचल व पगार (Staff)
+        </button>
+        <button onclick="switchExpenseSubTab('tractor')" id="expTab-tractor" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition whitespace-nowrap bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800">
+          🚜 इनफिल्डर / ट्रॅक्टर (Logistics)
+        </button>
+      </div>
+
+      <!-- Filter & Action Strip -->
+      <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between bg-slate-900 border border-slate-800 p-3.5 rounded-2xl">
+        <div class="relative flex-1">
+          <input type="text" id="expenseSearchInput" oninput="renderExpensesList()" placeholder="खर्च तपशील, व्यक्ती किंवा दुकान शोधा..." class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-500">
+          <span class="absolute right-3 top-2.5 text-slate-500">🔍</span>
+        </div>
+
+        <button onclick="openExpenseModal()" class="flex items-center justify-center gap-2 bg-amber-600 hover:bg-amber-500 text-white font-bold px-4 py-2.5 rounded-xl shadow transition active:scale-95 text-xs sm:text-sm border border-amber-400/30 flex-shrink-0">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg>
+          <span>नवीन खर्च नोंद (+ Expense)</span>
+        </button>
+      </div>
+
+      <!-- Expense Summary Ticker -->
+      <div id="expenseFilterSummary" class="flex items-center justify-between text-xs px-2 text-slate-400">
+        <span>एकूण नोंदी: <strong id="expenseCountDisplay" class="text-white">0</strong></span>
+        <span>निवडलेला एकूण खर्च: <strong id="expenseTotalAmountDisplay" class="text-rose-400 font-bold text-sm">₹0</strong></span>
+      </div>
+
+      <!-- Expenses List Container -->
+      <div id="expensesContainer" class="space-y-3">
+        <!-- Rendered by JS -->
+      </div>
+    </section>
+
+    <!-- ================= FILTERABLE LEDGER & REPORTS VIEW ================= -->
+    <section id="sectionLedger" class="space-y-4 hidden">
+      
+      <!-- Report Filter Toolbar -->
+      <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl space-y-3">
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm font-bold text-white flex items-center gap-2">
+            <svg class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+            </svg>
+            <span>हिशोब वही व ताळेबंद रिपोर्ट (Ledger & Reports)</span>
+          </h3>
+          <span class="text-xs text-slate-400">Excel / WhatsApp तयार</span>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs">
+          <div>
+            <label class="block text-slate-400 text-[11px] mb-1">कालावधी (Quick Period)</label>
+            <select id="ledgerDatePreset" onchange="applyLedgerDatePreset()" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-2.5 py-2 text-white">
+              <option value="all">सर्व कालावधी (All Time)</option>
+              <option value="today">आज (Today)</option>
+              <option value="this_week">या आठवड्यात (This Week)</option>
+              <option value="this_month">चालू महिना (This Month)</option>
+              <option value="custom">सानुकूल तारीख (Custom Range)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-slate-400 text-[11px] mb-1">पासून (From Date)</label>
+            <input type="date" id="ledgerStartDate" onchange="renderLedger()" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-2.5 py-2 text-white">
+          </div>
+          <div>
+            <label class="block text-slate-400 text-[11px] mb-1">पर्यंत (To Date)</label>
+            <input type="date" id="ledgerEndDate" onchange="renderLedger()" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-2.5 py-2 text-white">
+          </div>
+          <div>
+            <label class="block text-slate-400 text-[11px] mb-1">कारखाना (Factory Filter)</label>
+            <select id="ledgerFactoryFilter" onchange="renderLedger()" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-2.5 py-2 text-white">
+              <option value="">सर्व कारखाने (All)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Export & Share Buttons -->
+        <div class="flex flex-wrap items-center gap-2.5 pt-2 border-t border-slate-800">
+          <!-- WhatsApp Button -->
+          <button onclick="openWhatsAppModal()" class="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-3.5 py-2.5 rounded-xl shadow transition active:scale-95 border border-emerald-400/40">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+            <span>WhatsApp रिपोर्ट पाठवा</span>
+          </button>
+
+          <!-- Export CSVs -->
+          <button onclick="exportHarvestSlipsCSV()" class="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs px-3 py-2.5 rounded-xl border border-slate-700 transition active:scale-95">
+            <span>📥 तोडणी Excel (CSV)</span>
+          </button>
+
+          <button onclick="exportExpensesCSV()" class="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs px-3 py-2.5 rounded-xl border border-slate-700 transition active:scale-95">
+            <span>📥 खर्च Excel (CSV)</span>
+          </button>
+
+          <button onclick="exportCombinedLedgerCSV()" class="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-emerald-400 font-semibold text-xs px-3 py-2.5 rounded-xl border border-emerald-900/50 transition active:scale-95">
+            <span>📑 संपूर्ण ताळेबंद (Full P&L CSV)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Ledger Filtered Summary Card -->
+      <div id="ledgerSummaryCard" class="bg-gradient-to-r from-slate-900 via-slate-850 to-slate-900 border border-slate-800 p-4 rounded-2xl">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- Ledger Transactions Unified Table -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
+        <div class="px-4 py-3 border-b border-slate-800 flex items-center justify-between">
+          <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider">सर्व व्यवहारांची वही (Chronological Ledger)</h4>
+          <span id="ledgerCountDisplay" class="text-xs text-slate-500">0 व्यवहार</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-950 text-slate-400 font-semibold uppercase text-[10px] border-b border-slate-800">
+              <tr>
+                <th class="p-3">तारीख (Date)</th>
+                <th class="p-3">प्रकार (Type)</th>
+                <th class="p-3">तपशील (Description)</th>
+                <th class="p-3">संदर्भ / क्र. (Ref)</th>
+                <th class="p-3 text-right">जमा उत्पन्न (Cr. ₹)</th>
+                <th class="p-3 text-right">खर्च (Dr. ₹)</th>
+                <th class="p-3 text-right">शिल्लक (Balance ₹)</th>
+              </tr>
+            </thead>
+            <tbody id="ledgerTableBody" class="divide-y divide-slate-800/60 font-mono">
+              <!-- Rendered by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ================= SETTINGS & BACKUP VIEW ================= -->
+    <section id="sectionSettings" class="space-y-4 hidden">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-5 space-y-4">
+        <div class="flex items-center gap-2 pb-3 border-b border-slate-800">
+          <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/></svg>
+          <h3 class="text-sm font-bold text-white">मशीन व ॲप सेटिंग्ज (Machine Profile & Settings)</h3>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+          <div>
+            <label class="block text-slate-300 font-semibold mb-1">हार्वेस्टर मशीनचे नाव व मॉडेल (Harvester Name)</label>
+            <input type="text" id="settingMachineName" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white">
+          </div>
+          <div>
+            <label class="block text-slate-300 font-semibold mb-1">गाडी नंबर (Registration No.)</label>
+            <input type="text" id="settingMachineReg" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white">
+          </div>
+          <div>
+            <label class="block text-slate-300 font-semibold mb-1">डिफॉल्ट तोडणी दर प्रति टन (Default Rate ₹/Ton)</label>
+            <input type="number" id="settingDefaultRate" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white">
+          </div>
+          <div>
+            <label class="block text-slate-300 font-semibold mb-1">चालू हंगाम (Current Season)</label>
+            <input type="text" id="settingSeason" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white">
+          </div>
+        </div>
+
+        <button onclick="saveMachineSettings()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow transition active:scale-95">
+          💾 बदल सेव्ह करा (Save Settings)
+        </button>
+      </div>
+
+      <!-- Offline & Data Backup -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-5 space-y-4">
+        <div class="flex items-center gap-2 pb-3 border-b border-slate-800">
+          <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+          <h3 class="text-sm font-bold text-white">डेटा बॅकअप आणि सुरक्षितता (Offline Storage & Backup)</h3>
+        </div>
+        <p class="text-xs text-slate-400">
+          हा ॲप १००% ऑफलाइन कार्य करतो. तुमचा सर्व डेटा तुमच्या मोबाईलच्या मेमरीमध्ये सुरक्षित आहे. फोन बदलताना किंवा सुरक्षिततेसाठी JSON फाईल डाउनलोड करून ठेवा.
+        </p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <button onclick="exportJSONBackup()" class="flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs p-3 rounded-xl border border-slate-700 transition active:scale-95">
+            <span>📥 पूर्ण बॅकअप डाउनलोड (JSON)</span>
+          </button>
+
+          <label class="flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs p-3 rounded-xl border border-slate-700 transition active:scale-95 cursor-pointer">
+            <span>📤 बॅकअप फाईल रिस्टोअर करा</span>
+            <input type="file" id="jsonImportInput" accept=".json" onchange="importJSONBackup(event)" class="hidden">
+          </label>
+
+          <button onclick="loadSampleData(true)" class="flex items-center justify-center gap-2 bg-amber-950/60 hover:bg-amber-900/80 text-amber-300 font-semibold text-xs p-3 rounded-xl border border-amber-800/60 transition active:scale-95">
+            <span>🔄 नमुना डेटा लोड करा (Reset Demo)</span>
+          </button>
+        </div>
+
+        <div class="pt-3 border-t border-slate-800">
+          <button onclick="clearAllData()" class="text-rose-400 hover:text-rose-300 text-xs font-semibold underline">
+            ⚠️ सर्व डेटा कायमचा डिलीट करा (Clear All Data)
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= FLOATING ACTION BUTTON (Mobile Speed Access) ================= -->
+  <div class="fixed right-4 bottom-20 z-30 sm:hidden">
+    <div class="relative group">
+      <button onclick="toggleMobileFabMenu()" class="w-14 h-14 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white shadow-2xl flex items-center justify-center text-2xl font-bold transition active:scale-95 border-2 border-emerald-400/50">
+        <span id="fabIcon">+</span>
+      </button>
+
+      <div id="mobileFabMenu" class="hidden absolute bottom-16 right-0 space-y-2 mb-2 w-48 bg-slate-900 border border-slate-700 p-2 rounded-2xl shadow-2xl text-xs">
+        <button onclick="toggleMobileFabMenu(); openSlipModal();" class="w-full text-left p-2.5 rounded-xl hover:bg-slate-800 flex items-center gap-2 text-emerald-400 font-bold">
+          <span>🌿</span> तोडणी पावती नोंद
+        </button>
+        <button onclick="toggleMobileFabMenu(); openExpenseModal('diesel');" class="w-full text-left p-2.5 rounded-xl hover:bg-slate-800 flex items-center gap-2 text-amber-400 font-bold">
+          <span>⛽</span> डिझेल नोंद
+        </button>
+        <button onclick="toggleMobileFabMenu(); openExpenseModal('spares');" class="w-full text-left p-2.5 rounded-xl hover:bg-slate-800 flex items-center gap-2 text-orange-400 font-bold">
+          <span>🛠</span> स्पेअर व मेंटेनन्स
+        </button>
+        <button onclick="toggleMobileFabMenu(); openExpenseModal('labor');" class="w-full text-left p-2.5 rounded-xl hover:bg-slate-800 flex items-center gap-2 text-rose-400 font-bold">
+          <span>👷</span> ड्रायव्हर / स्टाफ उचल
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= BOTTOM NAVIGATION BAR (Mobile Field Use) ================= -->
+  <nav class="fixed bottom-0 left-0 right-0 z-40 bg-slate-900/98 backdrop-blur border-t border-slate-800 px-2 py-1.5 shadow-2xl">
+    <div class="max-w-md mx-auto grid grid-cols-5 gap-1 text-[10px]">
+      
+      <!-- Nav 1: Dashboard -->
+      <button onclick="switchMainTab('dashboard')" id="navTab-dashboard" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-xl text-emerald-400 font-bold transition">
+        <svg class="w-5 h-5 mb-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="9"/>
+          <rect x="14" y="3" width="7" height="5"/>
+          <rect x="14" y="12" width="7" height="9"/>
+          <rect x="3" y="16" width="7" height="5"/>
+        </svg>
+        <span>डॅशबोर्ड</span>
+      </button>
+
+      <!-- Nav 2: Slips -->
+      <button onclick="switchMainTab('slips')" id="navTab-slips" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-xl text-slate-400 hover:text-slate-200 transition">
+        <svg class="w-5 h-5 mb-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+          <polyline points="10 9 9 9 8 9"/>
+        </svg>
+        <span>तोडणी</span>
+      </button>
+
+      <!-- Nav 3: Expenses -->
+      <button onclick="switchMainTab('expenses')" id="navTab-expenses" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-xl text-slate-400 hover:text-slate-200 transition">
+        <svg class="w-5 h-5 mb-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 3v18h18"/>
+          <path d="M18 17V9"/>
+          <path d="M13 17V5"/>
+          <path d="M8 17v-3"/>
+        </svg>
+        <span>खर्च वही</span>
+      </button>
+
+      <!-- Nav 4: Ledger -->
+      <button onclick="switchMainTab('ledger')" id="navTab-ledger" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-xl text-slate-400 hover:text-slate-200 transition">
+        <svg class="w-5 h-5 mb-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 19.5A2.5 2.5 0 016.5 17H20"/>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/>
+        </svg>
+        <span>ताळेबंद</span>
+      </button>
+
+      <!-- Nav 5: Settings -->
+      <button onclick="switchMainTab('settings')" id="navTab-settings" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-xl text-slate-400 hover:text-slate-200 transition">
+        <svg class="w-5 h-5 mb-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/>
+        </svg>
+        <span>सेटिंग्ज</span>
+      </button>
+
+    </div>
+  </nav>
+
+  <!-- ================= MODAL: HARVEST SLIP ENTRY ================= -->
+  <div id="slipModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-3 sm:p-4 overflow-y-auto">
+    <div class="bg-slate-900 border border-slate-700 w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden my-auto">
+      
+      <!-- Modal Header -->
+      <div class="px-5 py-4 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-emerald-600/20 text-emerald-400 flex items-center justify-center font-bold">
+            🌿
+          </div>
+          <div>
+            <h3 id="slipModalTitle" class="text-sm sm:text-base font-bold text-white">
+              ऊस तोडणी व काटा पावती नोंद (Harvest Slip)
+            </h3>
+            <p class="text-[11px] text-slate-400">वजन, दर व कारखाना माहिती भरा</p>
+          </div>
+        </div>
+        <button onclick="closeSlipModal()" class="text-slate-400 hover:text-white p-1 rounded-lg">✕</button>
+      </div>
+
+      <!-- Form Body -->
+      <form id="slipForm" onsubmit="handleSaveSlip(event)" class="p-5 space-y-4 text-xs sm:text-sm">
+        <input type="hidden" id="slipId">
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-300 font-semibold mb-1">तारीख (Date) *</label>
+            <input type="date" id="slipDate" required class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white">
+          </div>
+          <div>
+            <label class="block text-slate-300 font-semibold mb-1">काटा पावती क्र. (Slip No.) *</label>
+            <input type="text" id="slipNumber" required placeholder="उदा. P-4501" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white font-mono">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-300 font-semibold mb-1">साखर कारखाना नाव (Sugar Factory) *</label>
+            <input type="text" id="slipFactory" list="factoryList" required placeholder="कारखान्याचे नाव टाका किंवा निवडा" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white">
+            <datalist id="factoryList">
+              <option value="दत्त दालमिया साखर कारखाना, शिरोळ (Shree Datta Shirol)">
+              <option value="छत्रपती शाहू साखर कारखाना, कागल (Chh. Shahu Kagal)">
+              <option value="जवाहर शेतकरी सह. सा. का. हुपरी (Jawahar SSK Hupari)">
+              <option value="वारणा सहकारी साखर कारखाना (Warana SSK)">
+              <option value="पंचगंगा साखर कारखाना, इचलकरंजी (Panchganga SSK)">
+              <option value="सोमेश्वर सहकारी साखर कारखाना (Someshwar SSK)">
+              <option value="बारामती ॲग्रो लि. (Baramati Agro)">
+              <option value="विठ्ठलराव शिंदे सहकारी साखर कारखाना (Vitthalrao Shinde SSK)">
+            </datalist>
+          </div>
+          <div>
+            <label class="block text-slate-300 font-semibold mb-1">शेतकरी नाव (Farmer Name) *</label>
+            <input type="text" id="slipFarmer" required placeholder="उदा. संभाजी पाटील" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-300 font-semibold mb-1">गट क्र. / सर्व्हे (Plot/Gut No.)</label>
+            <input type="text" id="slipPlotNo" placeholder="उदा. गट १२८/२" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white">
+          </div>
+          <div>
+            <label class="block text-slate-300 font-semibold mb-1">मशीन अवर्स रन (Engine Hours)</label>
+            <input type="number" step="0.1" id="slipHours" placeholder="उदा. 1.5" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white">
+          </div>
+        </div>
+
+        <!-- Calculation Row: Tonnage x Rate = Total Amount -->
+        <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-3">
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block text-emerald-400 font-bold mb-1">गाळप वजन (Tons) *</label>
+              <input type="number" step="0.01" id="slipTonnage" required oninput="calcSlipTotal()" placeholder="28.45" class="w-full bg-slate-900 border border-emerald-500/50 rounded-xl px-3 py-2 text-white font-bold text-base focus:border-emerald-400">
+            </div>
+            <div>
+              <label class="block text-slate-300 font-semibold mb-1">प्रति टन दर (Rate ₹/T)</label>
+              <input type="number" step="1" id="slipRate" required oninput="calcSlipTotal()" value="450" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white font-semibold">
+            </div>
+            <div class="col-span-2 sm:col-span-1">
+              <label class="block text-emerald-400 font-bold mb-1">एकूण बिल (Total ₹)</label>
+              <div id="slipCalculatedAmount" class="w-full bg-slate-900 border border-emerald-600/60 rounded-xl px-3 py-2 text-emerald-400 font-extrabold text-base flex items-center">
+                ₹ 0
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-300 font-semibold mb-1">पेमेंट स्थिती (Payment Status)</label>
+            <select id="slipPaymentStatus" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white font-medium">
+              <option value="pending">⏳ कारखान्याकडून येणे बाकी (Pending)</option>
+              <option value="paid">✅ खात्यावर जमा झाले (Paid)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-slate-300 font-semibold mb-1">इनफिल्डर ट्रॅक्टर (Infielder No.)</label>
+            <input type="text" id="slipTractorNo" placeholder="उदा. MH-09-5432" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-slate-300 font-semibold mb-1">शेरा / टीप (Remarks)</label>
+          <input type="text" id="slipRemarks" placeholder="उदा. आडवा ऊस, लांब वाहतूक, इ." class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white">
+        </div>
+
+        <!-- Buttons -->
+        <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+          <button type="button" onclick="closeSlipModal()" class="px-4 py-2.5 rounded-xl text-slate-400 hover:text-white bg-slate-800 text-xs font-semibold">
+            रद्द करा (Cancel)
+          </button>
+          <button type="submit" class="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-lg transition active:scale-95 border border-emerald-400/40">
+            💾 पावती सेव्ह करा (Save Slip)
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: EXPENSE & MAINTENANCE ENTRY ================= -->
+  <div id="expenseModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-3 sm:p-4 overflow-y-auto">
+    <div class="bg-slate-900 border border-slate-700 w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden my-auto">
+      
+      <!-- Modal Header -->
+      <div class="px-5 py-4 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <div id="expenseModalIcon" class="w-8 h-8 rounded-lg bg-amber-600/20 text-amber-400 flex items-center justify-center font-bold">
+            ⛽
+          </div>
+          <div>
+            <h3 id="expenseModalTitle" class="text-sm sm:text-base font-bold text-white">
+              खर्च व देखभाल नोंद (Expense Entry)
+            </h3>
+            <p class="text-[11px] text-slate-400">डिझेल, स्पेअर पार्ट्स, ड्रायव्हर पगार व इतर खर्च</p>
+          </div>
+        </div>
+        <button onclick="closeExpenseModal()" class="text-slate-400 hover:text-white p-1 rounded-lg">✕</button>
+      </div>
+
+      <!-- Form Body -->
+      <form id="expenseForm" onsubmit="handleSaveExpense(event)" class="p-5 space-y-4 text-xs sm:text-sm">
+        <input type="hidden" id="expenseId">
+
+        <!-- Category Selector -->
+        <div>
+          <label class="block text-slate-300 font-semibold mb-1">खर्च प्रकार (Category) *</label>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <label class="cursor-pointer">
+              <input type="radio" name="expenseCategory" value="diesel" checked onchange="updateExpenseFormFields()" class="peer hidden">
+              <div class="p-2.5 rounded-xl text-center bg-slate-950 border border-slate-700 peer-checked:border-amber-500 peer-checked:bg-amber-950/40 text-slate-300 peer-checked:text-amber-400 font-semibold text-xs">
+                ⛽ डिझेल (Diesel)
+              </div>
+            </label>
+            <label class="cursor-pointer">
+              <input type="radio" name="expenseCategory" value="spares" onchange="updateExpenseFormFields()" class="peer hidden">
+              <div class="p-2.5 rounded-xl text-center bg-slate-950 border border-slate-700 peer-checked:border-orange-500 peer-checked:bg-orange-950/40 text-slate-300 peer-checked:text-orange-400 font-semibold text-xs">
+                🛠 स्पेअर/दुरुस्ती (Spares)
+              </div>
+            </label>
+            <label class="cursor-pointer">
+              <input type="radio" name="expenseCategory" value="labor" onchange="updateExpenseFormFields()" class="peer hidden">
+              <div class="p-2.5 rounded-xl text-center bg-slate-950 border border-slate-700 peer-checked:border-rose-500 peer-checked:bg-rose-950/40 text-slate-300 peer-checked:text-rose-400 font-semibold text-xs">
+                👷 उचल/पगार (Staff)
+              </div>
+            </label>
+            <label class="cursor-pointer">
+              <input type="radio" name="expenseCategory" value="tractor" onchange="updateExpenseFormFields()" class="peer hidden">
+              <div class="p-2.5 rounded-xl text-center bg-slate-950 border border-slate-700 peer-checked:border-purple-500 peer-checked:bg-purple-950/40 text-slate-300 peer-checked:text-purple-400 font-semibold text-xs">
+                🚜 इनफिल्डर (Tractor)
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Date & Ref -->
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-300 font-semibold mb-1">तारीख (Date) *</label>
+            <input type="date" id="expenseDate" required class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white">
+          </div>
+          <div>
+            <label class="block text-slate-300 font-semibold mb-1">बिल / पावती क्र. (Bill/Receipt No.)</label>
+            <input type="text" id="expenseBillNo" placeholder="उदा. B-902" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white">
+          </div>
+        </div>
+
+        <!-- DIESEL CONDITIONAL FIELDS -->
+        <div id="fieldsDiesel" class="space-y-3 bg-amber-950/20 border border-amber-900/40 p-3.5 rounded-xl">
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block text-amber-400 font-semibold mb-1">भरलेले डिझेल (Liters) *</label>
+              <input type="number" step="0.01" id="dieselLiters" oninput="calcDieselTotal()" placeholder="200.00" class="w-full bg-slate-950 border border-amber-700/60 rounded-xl px-3 py-2 text-white font-bold">
+            </div>
+            <div>
+              <label class="block text-slate-300 font-semibold mb-1">डिझेल दर (Rate ₹/L)</label>
+              <input type="number" step="0.01" id="dieselRate" oninput="calcDieselTotal()" value="92.50" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white">
+            </div>
+            <div class="col-span-2 sm:col-span-1">
+              <label class="block text-amber-400 font-semibold mb-1">मशीन अवर्स रिडिंग</label>
+              <input type="number" step="0.1" id="dieselHourMeter" placeholder="उदा. 1250.5" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white">
+            </div>
+          </div>
+          <div>
+            <label class="block text-slate-300 font-semibold mb-1">पेट्रोल पंप / पुरवठादार (Pump Name)</label>
+            <input type="text" id="dieselPump" placeholder="उदा. इंडियन ऑईल पंप, शिरोळ" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white">
+          </div>
+        </div>
+
+        <!-- SPARES CONDITIONAL FIELDS -->
+        <div id="fieldsSpares" class="space-y-3 bg-orange-950/20 border border-orange-900/40 p-3.5 rounded-xl hidden">
+          <div>
+            <label class="block text-orange-400 font-semibold mb-1">स्पेअर पार्ट प्रकार (Spare Category)</label>
+            <select id="spareCategory" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white">
+              <option value="Base Cutter Blades (बेस कटर पाती)">बेस कटर पाती (Base Cutter Blades)</option>
+              <option value="Chopper Blades (चॉपर पाती)">चॉपर पाती (Chopper Blades)</option>
+              <option value="Hydraulic Oil & Filter (हायड्रॉलिक ऑईल/फिल्टर)">हायड्रॉलिक ऑईल व फिल्टर (Hydraulic Oil & Filters)</option>
+              <option value="Engine Oil & Service (इंजिन ऑईल सर्व्हिस)">इंजिन ऑईल व नियमित सर्व्हिस (Engine Oil)</option>
+              <option value="Welding & Fabrication (वेल्डिंग/दुरुस्ती)">वेल्डिंग व मेकॅनिक मजुरी (Welding/Mechanic)</option>
+              <option value="Elevator Chain & Slats (एलिव्हेटर चेन)">एलिव्हेटर चेन व स्लॅट्स (Elevator Chain)</option>
+              <option value="Greasing & Hardware (ग्रीसिंग व इतर)">ग्रीसिंग व नट-बोल्ट (Greasing/Hardware)</option>
+              <option value="Other Spares (इतर)">इतर स्पेअर्स (Other Spares)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-slate-300 font-semibold mb-1">दुकान / मेकॅनिक नाव (Vendor/Mechanic)</label>
+            <input type="text" id="spareVendor" placeholder="उदा. न्यू महालक्ष्मी ऑटो, कोल्हापूर" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white">
+          </div>
+        </div>
+
+        <!-- LABOR CONDITIONAL FIELDS -->
+        <div id="fieldsLabor" class="space-y-3 bg-rose-950/20 border border-rose-900/40 p-3.5 rounded-xl hidden">
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-rose-400 font-semibold mb-1">कर्मचारी नाव (Staff Name) *</label>
+              <input type="text" id="laborStaffName" placeholder="उदा. सुरेश शिंदे" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white">
+            </div>
+            <div>
+              <label class="block text-slate-300 font-semibold mb-1">हुद्दा (Role)</label>
+              <select id="laborRole" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                <option value="मुख्य ऑपरेटर (Main Operator)">मुख्य ऑपरेटर (Main Operator)</option>
+                <option value="सेकंड ऑपरेटर (Co-Driver)">सेकंड ऑपरेटर (Co-Driver)</option>
+                <option value="ट्रॅक्टर ड्रायव्हर (Tractor Driver)">ट्रॅक्टर ड्रायव्हर (Tractor Driver)</option>
+                <option value="हेल्पर / मदतनीस (Helper)">हेल्पर / मदतनीस (Helper)</option>
+                <option value="मेकॅनिक (Mechanic)">मेकॅनिक (Mechanic)</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label class="block text-slate-300 font-semibold mb-1">प्रकार (Payment Type)</label>
+            <select id="laborPaymentType" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white">
+              <option value="Advance (उचल)">उचल (Advance)</option>
+              <option value="Monthly Wage (मासिक पगार)">मासिक पगार (Monthly Wage)</option>
+              <option value="Mess & Food Allowance (खानावळ खर्च)">मेस / खानावळ खर्च (Food Allowance)</option>
+              <option value="Bonus / Reward (बोनस)">बोनस / बक्षीस (Bonus)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- TRACTOR CONDITIONAL FIELDS -->
+        <div id="fieldsTractor" class="space-y-3 bg-purple-950/20 border border-purple-900/40 p-3.5 rounded-xl hidden">
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-purple-400 font-semibold mb-1">ट्रॅक्टर नंबर (Tractor No.)</label>
+              <input type="text" id="tractorRegNo" placeholder="उदा. MH-09-AK-1234" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white">
+            </div>
+            <div>
+              <label class="block text-slate-300 font-semibold mb-1">ट्रॅक्टर ड्रायव्हर नाव</label>
+              <input type="text" id="tractorDriverName" placeholder="उदा. अमोल कांबळे" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white">
+            </div>
+          </div>
+          <div>
+            <label class="block text-slate-300 font-semibold mb-1">खर्च प्रकार (Type)</label>
+            <select id="tractorExpenseType" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white">
+              <option value="ट्रॅक्टर डिझेल (Tractor Diesel)">ट्रॅक्टर डिझेल (Tractor Diesel)</option>
+              <option value="ट्रॅक्टर भाडे (Tractor Hire Charges)">ट्रॅक्टर भाडे (Tractor Hire Charges)</option>
+              <option value="ट्रॅक्टर दुरुस्ती / टायर (Repairs/Tyre)">ट्रॅक्टर दुरुस्ती / टायर (Repairs/Tyre)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Common: Expense Description & Total Amount -->
+        <div>
+          <label class="block text-slate-300 font-semibold mb-1">खर्चाचा तपशील (Description / Item Name) *</label>
+          <input type="text" id="expenseTitle" required placeholder="उदा. डिझेल भरले / नवीन पाती सेट / ऑपरेटर उचल" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white">
+        </div>
+
+        <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+          <div class="flex items-center justify-between">
+            <div>
+              <label class="block text-rose-400 font-bold mb-1">एकूण खर्च रक्कम (Total Amount ₹) *</label>
+              <span class="text-[11px] text-slate-400">खर्च खात्यातून वजा होईल</span>
+            </div>
+            <div class="w-48">
+              <input type="number" step="0.01" id="expenseAmount" required placeholder="0.00" class="w-full bg-slate-900 border border-rose-500/60 rounded-xl px-3 py-2 text-rose-400 font-extrabold text-lg text-right focus:border-rose-400">
+            </div>
+          </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+          <button type="button" onclick="closeExpenseModal()" class="px-4 py-2.5 rounded-xl text-slate-400 hover:text-white bg-slate-800 text-xs font-semibold">
+            रद्द करा (Cancel)
+          </button>
+          <button type="submit" class="px-6 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs shadow-lg transition active:scale-95 border border-amber-400/40">
+            💾 खर्च नोंद सेव्ह करा (Save Expense)
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: WHATSAPP SHARE PREVIEW ================= -->
+  <div id="whatsAppModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-3 sm:p-4 overflow-y-auto">
+    <div class="bg-slate-900 border border-slate-700 w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden my-auto">
+      
+      <!-- Header -->
+      <div class="px-5 py-4 bg-emerald-950 border-b border-emerald-900/50 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-bold">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+          </div>
+          <div>
+            <h3 class="text-sm sm:text-base font-bold text-white">व्हॉट्सॲप मेसेज प्रिव्ह्यू (WhatsApp Summary)</h3>
+            <p class="text-[11px] text-emerald-300">हार्वेस्टर मालक व भागीदारांसाठी तयार मेसेज</p>
+          </div>
+        </div>
+        <button onclick="closeWhatsAppModal()" class="text-slate-400 hover:text-white p-1 rounded-lg">✕</button>
+      </div>
+
+      <!-- Preview Textarea -->
+      <div class="p-5 space-y-4">
+        <div>
+          <label class="block text-slate-300 text-xs font-semibold mb-1">मेसेज मजकूर (Message Content):</label>
+          <textarea id="whatsAppTextPreview" rows="12" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-xs font-mono text-emerald-300 focus:outline-none focus:border-emerald-500 leading-relaxed"></textarea>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-800">
+          <button onclick="copyWhatsAppText()" id="btnCopyWhatsApp" class="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold px-4 py-2.5 rounded-xl border border-slate-700 transition active:scale-95">
+            📋 मेसेज कॉपी करा (Copy Text)
+          </button>
+
+          <button onclick="sendToWhatsAppNow()" class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-5 py-2.5 rounded-xl shadow-lg transition active:scale-95 border border-emerald-400/30">
+            <span>🚀 व्हॉट्सॲपवर पाठवा (Open WhatsApp)</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= TOAST NOTIFICATION ================= -->
+  <div id="toastNotification" class="fixed top-4 right-4 z-50 transform -translate-y-16 opacity-0 transition-all duration-300 bg-slate-900 border border-emerald-500 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2.5 pointer-events-none text-xs sm:text-sm">
+    <span id="toastIcon">✅</span>
+    <span id="toastMessage" class="font-medium">नोंद यशस्वीरीत्या सेव्ह झाली!</span>
+  </div>
+
+  <!-- ================= EMBEDDED JAVASCRIPT APPLICATION CODE ================= -->
+  <script>
+    /**
+     * Sugarcane Harvester Machine Operations & P&L Book
+     * ऊस तोडणी मशीन हिशोब व नफा-तोटा अॅप
+     * 100% Offline-capable LocalStorage PWA
+     */
+
+    // --- STATE MANAGEMENT ---
+    const STORAGE_KEY_SLIPS = 'harvester_pl_slips_v1';
+    const STORAGE_KEY_EXPENSES = 'harvester_pl_expenses_v1';
+    const STORAGE_KEY_SETTINGS = 'harvester_pl_settings_v1';
+
+    let state = {
+      slips: [],
+      expenses: [],
+      settings: {
+        machineName: 'John Deere 3522',
+        regNo: 'MH-12-AB-9876',
+        defaultRate: 450,
+        season: '2026-27'
+      },
+      currentMainTab: 'dashboard',
+      currentExpenseSubTab: 'all'
+    };
+
+    // --- REALISTIC SAMPLE DATA PRE-LOADED ---
+    const SAMPLE_SETTINGS = {
+      machineName: 'John Deere 3522 Sugarcane Harvester',
+      regNo: 'MH-12-AB-9876',
+      defaultRate: 450,
+      season: '2026-27'
+    };
+
+    const SAMPLE_SLIPS = [
+      {
+        id: 'slip-101',
+        date: '2026-11-01',
+        slipNumber: 'DS-8901',
+        factory: 'दत्त दालमिया साखर कारखाना, शिरोळ (Shree Datta Shirol)',
+        farmer: 'रमेश आनंदराव पाटील',
+        plotNo: 'गट १४२/१',
+        tonnage: 34.50,
+        rate: 450,
+        totalAmount: 15525,
+        hours: 1.8,
+        tractorNo: 'MH-09-CQ-2231',
+        paymentStatus: 'paid',
+        remarks: 'सरळ ऊस, उत्तम तोड'
+      },
+      {
+        id: 'slip-102',
+        date: '2026-11-02',
+        slipNumber: 'DS-8945',
+        factory: 'दत्त दालमिया साखर कारखाना, शिरोळ (Shree Datta Shirol)',
+        farmer: 'संभाजीराव यशवंत भोसले',
+        plotNo: 'गट ७८',
+        tonnage: 38.20,
+        rate: 450,
+        totalAmount: 17190,
+        hours: 2.1,
+        tractorNo: 'MH-09-CQ-2231',
+        paymentStatus: 'paid',
+        remarks: 'रात्रीची तोड'
+      },
+      {
+        id: 'slip-103',
+        date: '2026-11-03',
+        slipNumber: 'JS-1120',
+        factory: 'जवाहर शेतकरी सह. सा. का. हुपरी (Jawahar SSK Hupari)',
+        farmer: 'बाळासाहेब रामचंद्र जाधव',
+        plotNo: 'गट २०५/३',
+        tonnage: 29.80,
+        rate: 460,
+        totalAmount: 13708,
+        hours: 1.6,
+        tractorNo: 'MH-09-ET-4450',
+        paymentStatus: 'pending',
+        remarks: 'पाणी असलेला वावर'
+      },
+      {
+        id: 'slip-104',
+        date: '2026-11-04',
+        slipNumber: 'JS-1165',
+        factory: 'जवाहर शेतकरी सह. सा. का. हुपरी (Jawahar SSK Hupari)',
+        farmer: 'दिनकर महादेव पाटील',
+        plotNo: 'गट ९९',
+        tonnage: 31.40,
+        rate: 460,
+        totalAmount: 14444,
+        hours: 1.7,
+        tractorNo: 'MH-09-ET-4450',
+        paymentStatus: 'pending',
+        remarks: '८६०३२ जात'
+      },
+      {
+        id: 'slip-105',
+        date: '2026-11-05',
+        slipNumber: 'SK-4412',
+        factory: 'छत्रपती शाहू साखर कारखाना, कागल (Chh. Shahu Kagal)',
+        farmer: 'प्रकाश विठ्ठल गायकवाड',
+        plotNo: 'गट ३१०',
+        tonnage: 42.10,
+        rate: 450,
+        totalAmount: 18945,
+        hours: 2.3,
+        tractorNo: 'MH-09-CQ-2231',
+        paymentStatus: 'paid',
+        remarks: 'भरपूर उतारा'
+      },
+      {
+        id: 'slip-106',
+        date: '2026-11-06',
+        slipNumber: 'SK-4456',
+        factory: 'छत्रपती शाहू साखर कारखाना, कागल (Chh. Shahu Kagal)',
+        farmer: 'तानाजी रंगराव माने',
+        plotNo: 'गट २१४',
+        tonnage: 36.60,
+        rate: 450,
+        totalAmount: 16470,
+        hours: 2.0,
+        tractorNo: 'MH-09-CQ-2231',
+        paymentStatus: 'pending',
+        remarks: 'आडवा ऊस'
+      },
+      {
+        id: 'slip-107',
+        date: '2026-11-07',
+        slipNumber: 'WS-6021',
+        factory: 'वारणा सहकारी साखर कारखाना (Warana SSK)',
+        farmer: 'संजय गोविंदराव चव्हाण',
+        plotNo: 'गट ५५/A',
+        tonnage: 33.75,
+        rate: 470,
+        totalAmount: 15862.5,
+        hours: 1.9,
+        tractorNo: 'MH-09-ET-4450',
+        paymentStatus: 'pending',
+        remarks: 'खोडावा तोड'
+      },
+      {
+        id: 'slip-108',
+        date: '2026-11-08',
+        slipNumber: 'BA-3040',
+        factory: 'बारामती ॲग्रो लि. (Baramati Agro)',
+        farmer: 'ज्ञानेश्वर तुकाराम सोनावणे',
+        plotNo: 'गट ११८',
+        tonnage: 35.20,
+        rate: 450,
+        totalAmount: 15840,
+        hours: 1.8,
+        tractorNo: 'MH-09-CQ-2231',
+        paymentStatus: 'pending',
+        remarks: 'चांगले नियोजन'
+      }
+    ];
+
+    const SAMPLE_EXPENSES = [
+      {
+        id: 'exp-201',
+        category: 'diesel',
+        date: '2026-11-01',
+        title: 'डिझेल भरले (Diesel Tanker Refill)',
+        amount: 18500,
+        billNo: 'IOC-5541',
+        dieselLiters: 200,
+        dieselRate: 92.50,
+        dieselHourMeter: 1210.5,
+        dieselPump: 'इंडियन ऑईल पंप, शिरोळ'
+      },
+      {
+        id: 'exp-202',
+        category: 'spares',
+        date: '2026-11-02',
+        title: 'बेस कटर नवीन पाती सेट (12 Blades Set)',
+        amount: 8400,
+        billNo: 'INV-402',
+        spareCategory: 'Base Cutter Blades (बेस कटर पाती)',
+        spareVendor: 'न्यू महालक्ष्मी ट्रॅक्टर्स व ऑटो, कोल्हापूर'
+      },
+      {
+        id: 'exp-203',
+        category: 'labor',
+        date: '2026-11-03',
+        title: 'मुख्य ऑपरेटर उचल (Advance Given)',
+        amount: 5000,
+        billNo: 'ADV-01',
+        laborStaffName: 'सुरेश विष्णू शिंदे',
+        laborRole: 'मुख्य ऑपरेटर (Main Operator)',
+        laborPaymentType: 'Advance (उचल)'
+      },
+      {
+        id: 'exp-204',
+        category: 'diesel',
+        date: '2026-11-04',
+        title: 'डिझेल भरले (Diesel Refill)',
+        amount: 23125,
+        billNo: 'HP-8890',
+        dieselLiters: 250,
+        dieselRate: 92.50,
+        dieselHourMeter: 1222.0,
+        dieselPump: 'हिंदुस्थान पेट्रोलियम, हुपरी'
+      },
+      {
+        id: 'exp-205',
+        category: 'spares',
+        date: '2026-11-05',
+        title: 'हायड्रॉलिक ऑईल ६८ (20L Can) + रिटर्न फिल्टर',
+        amount: 6200,
+        billNo: 'SP-1092',
+        spareCategory: 'Hydraulic Oil & Filter (हायड्रॉलिक ऑईल/फिल्टर)',
+        spareVendor: 'कृष्णा ऑटो स्पेअर्स, कागल'
+      },
+      {
+        id: 'exp-206',
+        category: 'labor',
+        date: '2026-11-05',
+        title: 'हेल्पर व सेकंड ड्रायव्हर मेस / खानावळ खर्च',
+        amount: 3200,
+        billNo: 'MESS-1',
+        laborStaffName: 'संदीप कांबळे व विकास',
+        laborRole: 'हेल्पर / मदतनीस (Helper)',
+        laborPaymentType: 'Mess & Food Allowance (खानावळ खर्च)'
+      },
+      {
+        id: 'exp-207',
+        category: 'tractor',
+        date: '2026-11-06',
+        title: 'इनफिल्डर ट्रॅक्टर डिझेल व ड्रायव्हर भत्ता',
+        amount: 4500,
+        billNo: 'TR-10',
+        tractorRegNo: 'MH-09-CQ-2231',
+        tractorDriverName: 'अमोल कांबळे',
+        tractorExpenseType: 'ट्रॅक्टर डिझेल (Tractor Diesel)'
+      },
+      {
+        id: 'exp-208',
+        category: 'spares',
+        date: '2026-11-07',
+        title: 'एलिव्हेटर फ्रेम वेल्डिंग व पाती धार काढणे',
+        amount: 1800,
+        billNo: 'WLD-5',
+        spareCategory: 'Welding & Fabrication (वेल्डिंग/दुरुस्ती)',
+        spareVendor: 'गुरुदत्त वेल्डिंग वर्क्स, शिरोळ'
+      },
+      {
+        id: 'exp-209',
+        category: 'diesel',
+        date: '2026-11-08',
+        title: 'डिझेल भरले (Diesel Refill)',
+        amount: 18500,
+        billNo: 'IOC-5602',
+        dieselLiters: 200,
+        dieselRate: 92.50,
+        dieselHourMeter: 1234.5,
+        dieselPump: 'इंडियन ऑईल पंप'
+      }
+    ];
+
+    // --- INITIALIZATION ---
+    function initApp() {
+      loadState();
+      populateFactoryDropdowns();
+      renderAll();
+      setupDateDefaults();
+      registerServiceWorker();
+    }
+
+    function loadState() {
+      try {
+        const storedSlips = localStorage.getItem(STORAGE_KEY_SLIPS);
+        const storedExpenses = localStorage.getItem(STORAGE_KEY_EXPENSES);
+        const storedSettings = localStorage.getItem(STORAGE_KEY_SETTINGS);
+
+        if (storedSlips) {
+          state.slips = JSON.parse(storedSlips);
+        } else {
+          state.slips = [...SAMPLE_SLIPS];
+          saveSlips();
+        }
+
+        if (storedExpenses) {
+          state.expenses = JSON.parse(storedExpenses);
+        } else {
+          state.expenses = [...SAMPLE_EXPENSES];
+          saveExpenses();
+        }
+
+        if (storedSettings) {
+          state.settings = JSON.parse(storedSettings);
+        } else {
+          state.settings = { ...SAMPLE_SETTINGS };
+          saveSettings();
+        }
+      } catch (e) {
+        console.error('Storage parse error, resetting state:', e);
+        state.slips = [...SAMPLE_SLIPS];
+        state.expenses = [...SAMPLE_EXPENSES];
+        state.settings = { ...SAMPLE_SETTINGS };
+      }
+    }
+
+    function saveSlips() {
+      localStorage.setItem(STORAGE_KEY_SLIPS, JSON.stringify(state.slips));
+    }
+
+    function saveExpenses() {
+      localStorage.setItem(STORAGE_KEY_EXPENSES, JSON.stringify(state.expenses));
+    }
+
+    function saveSettings() {
+      localStorage.setItem(STORAGE_KEY_SETTINGS, JSON.stringify(state.settings));
+      updateSettingsUI();
+    }
+
+    function updateSettingsUI() {
+      document.getElementById('headerMachineName').innerText = `${state.settings.machineName} (${state.settings.regNo || ''})`;
+      document.getElementById('settingMachineName').value = state.settings.machineName || '';
+      document.getElementById('settingMachineReg').value = state.settings.regNo || '';
+      document.getElementById('settingDefaultRate').value = state.settings.defaultRate || 450;
+      document.getElementById('settingSeason').value = state.settings.season || '2026-27';
+    }
+
+    function setupDateDefaults() {
+      const today = new Date().toISOString().split('T')[0];
+      const slipDateInput = document.getElementById('slipDate');
+      const expenseDateInput = document.getElementById('expenseDate');
+      if (slipDateInput && !slipDateInput.value) slipDateInput.value = today;
+      if (expenseDateInput && !expenseDateInput.value) expenseDateInput.value = today;
+    }
+
+    // --- TAB NAVIGATION ---
+    function switchMainTab(tab) {
+      state.currentMainTab = tab;
+      const tabs = ['dashboard', 'slips', 'expenses', 'ledger', 'settings'];
+      tabs.forEach(t => {
+        const section = document.getElementById(`section${capitalize(t)}`);
+        const navBtn = document.getElementById(`navTab-${t}`);
+        if (t === tab) {
+          section?.classList.remove('hidden');
+          navBtn?.classList.remove('text-slate-400');
+          navBtn?.classList.add('text-emerald-400', 'font-bold');
+        } else {
+          section?.classList.add('hidden');
+          navBtn?.classList.remove('text-emerald-400', 'font-bold');
+          navBtn?.classList.add('text-slate-400');
+        }
+      });
+
+      // Scroll to top smoothly
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Refresh specific tab view
+      if (tab === 'dashboard') renderDashboard();
+      if (tab === 'slips') renderSlipsList();
+      if (tab === 'expenses') renderExpensesList();
+      if (tab === 'ledger') renderLedger();
+    }
+
+    function capitalize(s) {
+      return s.charAt(0).toUpperCase() + s.slice(1);
+    }
+
+    function toggleMobileFabMenu() {
+      const menu = document.getElementById('mobileFabMenu');
+      const icon = document.getElementById('fabIcon');
+      if (menu.classList.contains('hidden')) {
+        menu.classList.remove('hidden');
+        icon.innerText = '✕';
+      } else {
+        menu.classList.add('hidden');
+        icon.innerText = '+';
+      }
+    }
+
+    // --- RE-RENDER ALL VIEWS ---
+    function renderAll() {
+      updateSettingsUI();
+      renderDashboard();
+      renderSlipsList();
+      renderExpensesList();
+      renderLedger();
+    }
+
+    // ==========================================
+    // 1. DASHBOARD & LIVE P&L LOGIC
+    // ==========================================
+    function calculateTotals(filteredSlips = state.slips, filteredExpenses = state.expenses) {
+      const totalTons = filteredSlips.reduce((acc, s) => acc + (parseFloat(s.tonnage) || 0), 0);
+      const totalRevenue = filteredSlips.reduce((acc, s) => acc + (parseFloat(s.totalAmount) || 0), 0);
+      const paidRevenue = filteredSlips.filter(s => s.paymentStatus === 'paid').reduce((acc, s) => acc + (parseFloat(s.totalAmount) || 0), 0);
+      const pendingRevenue = totalRevenue - paidRevenue;
+
+      const totalEngineHours = filteredSlips.reduce((acc, s) => acc + (parseFloat(s.hours) || 0), 0);
+
+      // Expense breakdown
+      let dieselCost = 0;
+      let dieselLiters = 0;
+      let sparesCost = 0;
+      let laborCost = 0;
+      let tractorCost = 0;
+
+      filteredExpenses.forEach(e => {
+        const amt = parseFloat(e.amount) || 0;
+        if (e.category === 'diesel') {
+          dieselCost += amt;
+          dieselLiters += (parseFloat(e.dieselLiters) || 0);
+        } else if (e.category === 'spares') {
+          sparesCost += amt;
+        } else if (e.category === 'labor') {
+          laborCost += amt;
+        } else if (e.category === 'tractor') {
+          tractorCost += amt;
+        }
+      });
+
+      const totalExpenses = dieselCost + sparesCost + laborCost + tractorCost;
+      const netProfit = totalRevenue - totalExpenses;
+      const marginPercent = totalRevenue > 0 ? ((netProfit / totalRevenue) * 100).toFixed(1) : 0;
+
+      // Efficiency Metrics
+      const dieselPerTon = totalTons > 0 ? (dieselLiters / totalTons).toFixed(2) : '0.00';
+      const dieselPerHour = totalEngineHours > 0 ? (dieselLiters / totalEngineHours).toFixed(2) : '0.00';
+      const tonsPerHour = totalEngineHours > 0 ? (totalTons / totalEngineHours).toFixed(2) : '0.00';
+      const costPerTon = totalTons > 0 ? (totalExpenses / totalTons).toFixed(2) : '0.00';
+      const profitPerTon = totalTons > 0 ? (netProfit / totalTons).toFixed(2) : '0.00';
+
+      return {
+        totalTons,
+        slipCount: filteredSlips.length,
+        totalRevenue,
+        paidRevenue,
+        pendingRevenue,
+        totalEngineHours,
+        totalExpenses,
+        dieselCost,
+        dieselLiters,
+        sparesCost,
+        laborCost,
+        tractorCost,
+        netProfit,
+        marginPercent,
+        dieselPerTon,
+        dieselPerHour,
+        tonsPerHour,
+        costPerTon,
+        profitPerTon
+      };
+    }
+
+    function formatCurrency(val) {
+      return '₹ ' + Math.round(val).toLocaleString('en-IN');
+    }
+
+    function renderDashboard() {
+      const data = calculateTotals();
+
+      // Net Profit Hero
+      const kpiNetProfit = document.getElementById('kpiNetProfit');
+      const pnlStatusBadge = document.getElementById('pnlStatusBadge');
+      const netProfitHeroCard = document.getElementById('netProfitHeroCard');
+      const kpiMarginPercent = document.getElementById('kpiMarginPercent');
+
+      kpiNetProfit.innerText = formatCurrency(data.netProfit);
+      kpiMarginPercent.innerText = `${data.marginPercent}% मार्जिन (Margin)`;
+
+      if (data.netProfit >= 0) {
+        kpiNetProfit.className = 'text-2xl sm:text-4xl font-extrabold text-emerald-400 tracking-tight';
+        pnlStatusBadge.innerText = 'नफ्यात (Profitable)';
+        pnlStatusBadge.className = 'text-xs px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 font-semibold border border-emerald-800';
+      } else {
+        kpiNetProfit.className = 'text-2xl sm:text-4xl font-extrabold text-rose-500 tracking-tight';
+        pnlStatusBadge.innerText = 'तोट्यात (In Loss)';
+        pnlStatusBadge.className = 'text-xs px-2 py-0.5 rounded bg-rose-950 text-rose-300 font-semibold border border-rose-800';
+      }
+
+      // Expense distribution mini-bar
+      if (data.totalRevenue > 0) {
+        const dPct = Math.min(100, (data.dieselCost / data.totalRevenue) * 100);
+        const sPct = Math.min(100, (data.sparesCost / data.totalRevenue) * 100);
+        const lPct = Math.min(100, (data.laborCost / data.totalRevenue) * 100);
+        const tPct = Math.min(100, (data.tractorCost / data.totalRevenue) * 100);
+        const netPct = Math.max(0, (data.netProfit / data.totalRevenue) * 100);
+
+        document.getElementById('barDiesel').style.width = `${dPct}%`;
+        document.getElementById('barSpares').style.width = `${sPct}%`;
+        document.getElementById('barLabor').style.width = `${lPct}%`;
+        document.getElementById('barTractor').style.width = `${tPct}%`;
+        document.getElementById('barNetProfit').style.width = `${netPct}%`;
+
+        const totalExpRatio = ((data.totalExpenses / data.totalRevenue) * 100).toFixed(0);
+        document.getElementById('kpiExpenseRatio').innerText = `${totalExpRatio}% खर्च प्रमाण`;
+      } else {
+        document.getElementById('barDiesel').style.width = '0%';
+        document.getElementById('barSpares').style.width = '0%';
+        document.getElementById('barLabor').style.width = '0%';
+        document.getElementById('barTractor').style.width = '0%';
+        document.getElementById('barNetProfit').style.width = '0%';
+        document.getElementById('kpiExpenseRatio').innerText = '0% खर्च प्रमाण';
+      }
+
+      // 4 Main Metric Cards
+      document.getElementById('kpiTotalTons').innerHTML = `${data.totalTons.toFixed(2)} <span class="text-xs font-normal text-slate-400">टन (MT)</span>`;
+      document.getElementById('kpiSlipCount').innerText = `${data.slipCount} काटा पावत्या (Slips)`;
+
+      document.getElementById('kpiTotalRevenue').innerText = formatCurrency(data.totalRevenue);
+      document.getElementById('kpiPendingAmount').innerText = `येणे: ${formatCurrency(data.pendingRevenue)}`;
+      document.getElementById('kpiPaidAmount').innerText = `जमा: ${formatCurrency(data.paidRevenue)}`;
+
+      document.getElementById('kpiTotalExpenses').innerText = formatCurrency(data.totalExpenses);
+      document.getElementById('kpiExpenseBreakdownSmall').innerText = `डिझेल: ${formatCurrency(data.dieselCost)} • स्पेअर: ${formatCurrency(data.sparesCost)}`;
+
+      document.getElementById('kpiTotalHours').innerHTML = `${data.totalEngineHours.toFixed(1)} <span class="text-xs font-normal text-slate-400">तास (Hrs)</span>`;
+      document.getElementById('kpiTonsPerHour').innerText = `${data.tonsPerHour} टन / तास (Tons/Hr)`;
+
+      // Diesel & Efficiency Benchmarks
+      document.getElementById('kpiDieselPerTon').innerHTML = `${data.dieselPerTon} <span class="text-xs text-slate-400">L/T</span>`;
+      document.getElementById('kpiDieselPerHour').innerHTML = `${data.dieselPerHour} <span class="text-xs text-slate-400">L/Hr</span>`;
+      document.getElementById('kpiTotalLiters').innerHTML = `${Math.round(data.dieselLiters).toLocaleString('en-IN')} <span class="text-xs text-slate-400">लिटर</span>`;
+      document.getElementById('kpiDieselTotalCost').innerText = `रक्कम: ${formatCurrency(data.dieselCost)}`;
+
+      document.getElementById('kpiCostPerTon').innerText = `₹ ${data.costPerTon}`;
+      document.getElementById('kpiProfitPerTon').innerText = `नफा: ₹ ${data.profitPerTon} / टन`;
+
+      // Diesel Benchmark Health Badge
+      const dPt = parseFloat(data.dieselPerTon);
+      const fuelBadge = document.getElementById('fuelHealthBadge');
+      if (dPt > 0 && dPt <= 5.5) {
+        fuelBadge.innerText = 'उत्कृष्ट सरासरी (Optimal)';
+        fuelBadge.className = 'text-[11px] font-semibold px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800';
+      } else if (dPt > 5.5 && dPt <= 6.5) {
+        fuelBadge.innerText = 'मध्यम वापर (Moderate)';
+        fuelBadge.className = 'text-[11px] font-semibold px-2 py-0.5 rounded bg-amber-950 text-amber-400 border border-amber-800';
+      } else if (dPt > 6.5) {
+        fuelBadge.innerText = 'जास्त डिझेल वापर (High Consumption)';
+        fuelBadge.className = 'text-[11px] font-semibold px-2 py-0.5 rounded bg-rose-950 text-rose-400 border border-rose-800';
+      }
+
+      // Sub-expense summary chips
+      document.getElementById('subExpenseDiesel').innerText = formatCurrency(data.dieselCost);
+      document.getElementById('subExpenseSpares').innerText = formatCurrency(data.sparesCost);
+      document.getElementById('subExpenseLabor').innerText = formatCurrency(data.laborCost);
+      document.getElementById('subExpenseTractor').innerText = formatCurrency(data.tractorCost);
+    }
+
+    // ==========================================
+    // 2. HARVEST & WEIGHT SLIP MODULE
+    // ==========================================
+    function populateFactoryDropdowns() {
+      const factories = Array.from(new Set(state.slips.map(s => s.factory).filter(Boolean)));
+      
+      const slipFactoryFilter = document.getElementById('slipFactoryFilter');
+      const ledgerFactoryFilter = document.getElementById('ledgerFactoryFilter');
+
+      const existingSlipVal = slipFactoryFilter.value;
+      const existingLedgerVal = ledgerFactoryFilter.value;
+
+      slipFactoryFilter.innerHTML = '<option value="">सर्व कारखाने (All Factories)</option>';
+      ledgerFactoryFilter.innerHTML = '<option value="">सर्व कारखाने (All Factories)</option>';
+
+      factories.forEach(f => {
+        const opt1 = document.createElement('option');
+        opt1.value = f;
+        opt1.innerText = f;
+        slipFactoryFilter.appendChild(opt1);
+
+        const opt2 = document.createElement('option');
+        opt2.value = f;
+        opt2.innerText = f;
+        ledgerFactoryFilter.appendChild(opt2);
+      });
+
+      if (existingSlipVal) slipFactoryFilter.value = existingSlipVal;
+      if (existingLedgerVal) ledgerFactoryFilter.value = existingLedgerVal;
+    }
+
+    function renderSlipsList() {
+      const container = document.getElementById('slipsContainer');
+      const query = (document.getElementById('slipSearchInput')?.value || '').toLowerCase().trim();
+      const factoryFilter = document.getElementById('slipFactoryFilter')?.value || '';
+      const statusFilter = document.getElementById('slipStatusFilter')?.value || '';
+
+      const filtered = state.slips.filter(s => {
+        const matchesQuery = !query || 
+          (s.farmer && s.farmer.toLowerCase().includes(query)) ||
+          (s.slipNumber && s.slipNumber.toLowerCase().includes(query)) ||
+          (s.plotNo && s.plotNo.toLowerCase().includes(query)) ||
+          (s.factory && s.factory.toLowerCase().includes(query));
+
+        const matchesFactory = !factoryFilter || s.factory === factoryFilter;
+        const matchesStatus = !statusFilter || s.paymentStatus === statusFilter;
+
+        return matchesQuery && matchesFactory && matchesStatus;
+      });
+
+      // Update filtered totals strip
+      const totalTons = filtered.reduce((acc, s) => acc + (parseFloat(s.tonnage) || 0), 0);
+      const totalAmount = filtered.reduce((acc, s) => acc + (parseFloat(s.totalAmount) || 0), 0);
+      const pendingAmount = filtered.filter(s => s.paymentStatus === 'pending').reduce((acc, s) => acc + (parseFloat(s.totalAmount) || 0), 0);
+
+      document.getElementById('slipCountDisplay').innerText = filtered.length;
+      document.getElementById('slipTonsDisplay').innerText = totalTons.toFixed(2);
+      document.getElementById('slipTotalAmountDisplay').innerText = formatCurrency(totalAmount);
+      document.getElementById('slipPendingDisplay').innerText = formatCurrency(pendingAmount);
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 text-center text-slate-400">
+            <p class="text-3xl mb-2">🌾</p>
+            <p class="text-sm font-semibold">कोणतीही तोडणी पावती सापडली नाही</p>
+            <p class="text-xs text-slate-500 mt-1">नवीन पावती जोडण्यासाठी '+ नवीन तोडणी पावती' बटण दाबा.</p>
+          </div>
+        `;
+        return;
+      }
+
+      // Sort by date descending
+      filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+      container.innerHTML = filtered.map(slip => {
+        const isPaid = slip.paymentStatus === 'paid';
+        return `
+          <div class="bg-slate-900 border border-slate-800 hover:border-slate-700 p-4 rounded-2xl shadow-sm transition space-y-3">
+            <div class="flex items-start justify-between gap-2">
+              <div class="min-w-0">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="font-mono text-xs font-bold px-2 py-0.5 rounded bg-slate-950 text-emerald-400 border border-emerald-900/60">
+                    #${escapeHtml(slip.slipNumber || 'NA')}
+                  </span>
+                  <span class="text-xs text-slate-400">📅 ${slip.date}</span>
+                  <span class="px-2 py-0.5 rounded text-[10px] font-semibold ${isPaid ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : 'bg-amber-950 text-amber-400 border border-amber-800'}">
+                    ${isPaid ? '✅ जमा (Paid)' : '⏳ येणे बाकी (Pending)'}
+                  </span>
+                </div>
+                <h4 class="text-sm sm:text-base font-bold text-white mt-1.5 truncate">
+                  ${escapeHtml(slip.farmer || 'शेतकरी')}
+                </h4>
+                <p class="text-xs text-slate-400 truncate flex items-center gap-1.5 mt-0.5">
+                  <span>🏢 ${escapeHtml(slip.factory || 'साखर कारखाना')}</span>
+                  ${slip.plotNo ? `<span>• गट: ${escapeHtml(slip.plotNo)}</span>` : ''}
+                </p>
+              </div>
+
+              <!-- Amount & Tonnage Block -->
+              <div class="text-right flex-shrink-0">
+                <div class="text-base sm:text-lg font-extrabold text-emerald-400">
+                  ${formatCurrency(slip.totalAmount || 0)}
+                </div>
+                <div class="text-xs font-bold text-slate-300">
+                  ${parseFloat(slip.tonnage || 0).toFixed(2)} टन <span class="text-[10px] text-slate-500 font-normal">(@ ₹${slip.rate}/T)</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Details & Quick Action Buttons -->
+            <div class="flex items-center justify-between text-[11px] pt-2 border-t border-slate-800 text-slate-400">
+              <div class="flex items-center gap-3">
+                ${slip.hours ? `<span>⏱ ${slip.hours} तास</span>` : ''}
+                ${slip.tractorNo ? `<span>🚜 ${escapeHtml(slip.tractorNo)}</span>` : ''}
+                ${slip.remarks ? `<span class="italic text-slate-500 hidden sm:inline">"${escapeHtml(slip.remarks)}"</span>` : ''}
+              </div>
+
+              <div class="flex items-center gap-1.5">
+                <!-- Toggle Payment Status Button -->
+                <button onclick="toggleSlipStatus('${slip.id}')" title="पेमेंट स्थिती बदला" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-300">
+                  ${isPaid ? '⏳ बाकी करा' : '✅ जमा करा'}
+                </button>
+                <button onclick="editSlip('${slip.id}')" title="दुरुस्ती करा (Edit)" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-400">
+                  ✏️
+                </button>
+                <button onclick="deleteSlip('${slip.id}')" title="डिलीट करा (Delete)" class="p-1.5 rounded-lg bg-slate-800 hover:bg-rose-900/60 text-rose-400">
+                  🗑️
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openSlipModal(slipToEdit = null) {
+      const modal = document.getElementById('slipModal');
+      const form = document.getElementById('slipForm');
+      form.reset();
+
+      if (slipToEdit) {
+        document.getElementById('slipModalTitle').innerText = 'पावती दुरुस्त करा (Edit Harvest Slip)';
+        document.getElementById('slipId').value = slipToEdit.id;
+        document.getElementById('slipDate').value = slipToEdit.date;
+        document.getElementById('slipNumber').value = slipToEdit.slipNumber;
+        document.getElementById('slipFactory').value = slipToEdit.factory;
+        document.getElementById('slipFarmer').value = slipToEdit.farmer;
+        document.getElementById('slipPlotNo').value = slipToEdit.plotNo || '';
+        document.getElementById('slipHours').value = slipToEdit.hours || '';
+        document.getElementById('slipTonnage').value = slipToEdit.tonnage;
+        document.getElementById('slipRate').value = slipToEdit.rate;
+        document.getElementById('slipPaymentStatus').value = slipToEdit.paymentStatus || 'pending';
+        document.getElementById('slipTractorNo').value = slipToEdit.tractorNo || '';
+        document.getElementById('slipRemarks').value = slipToEdit.remarks || '';
+      } else {
+        document.getElementById('slipModalTitle').innerText = 'ऊस तोडणी व काटा पावती नोंद (Harvest Slip)';
+        document.getElementById('slipId').value = '';
+        setupDateDefaults();
+        document.getElementById('slipRate').value = state.settings.defaultRate || 450;
+      }
+
+      calcSlipTotal();
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeSlipModal() {
+      const modal = document.getElementById('slipModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function calcSlipTotal() {
+      const tons = parseFloat(document.getElementById('slipTonnage').value) || 0;
+      const rate = parseFloat(document.getElementById('slipRate').value) || 0;
+      const total = tons * rate;
+      document.getElementById('slipCalculatedAmount').innerText = formatCurrency(total);
+    }
+
+    function handleSaveSlip(e) {
+      e.preventDefault();
+      const id = document.getElementById('slipId').value || 'slip-' + Date.now();
+      const tonnage = parseFloat(document.getElementById('slipTonnage').value) || 0;
+      const rate = parseFloat(document.getElementById('slipRate').value) || 450;
+      const totalAmount = tonnage * rate;
+
+      const slipData = {
+        id,
+        date: document.getElementById('slipDate').value,
+        slipNumber: document.getElementById('slipNumber').value.trim(),
+        factory: document.getElementById('slipFactory').value.trim(),
+        farmer: document.getElementById('slipFarmer').value.trim(),
+        plotNo: document.getElementById('slipPlotNo').value.trim(),
+        hours: parseFloat(document.getElementById('slipHours').value) || 0,
+        tonnage,
+        rate,
+        totalAmount,
+        paymentStatus: document.getElementById('slipPaymentStatus').value,
+        tractorNo: document.getElementById('slipTractorNo').value.trim(),
+        remarks: document.getElementById('slipRemarks').value.trim()
+      };
+
+      const existingIndex = state.slips.findIndex(s => s.id === id);
+      if (existingIndex >= 0) {
+        state.slips[existingIndex] = slipData;
+        showToast('पावती यशस्वीरीत्या अपडेट केली! (Slip Updated)');
+      } else {
+        state.slips.unshift(slipData);
+        showToast('नवीन तोडणी पावती नोंदवली! (Slip Saved)');
+      }
+
+      saveSlips();
+      populateFactoryDropdowns();
+      closeSlipModal();
+      renderAll();
+    }
+
+    function editSlip(id) {
+      const slip = state.slips.find(s => s.id === id);
+      if (slip) openSlipModal(slip);
+    }
+
+    function toggleSlipStatus(id) {
+      const slip = state.slips.find(s => s.id === id);
+      if (slip) {
+        slip.paymentStatus = slip.paymentStatus === 'paid' ? 'pending' : 'paid';
+        saveSlips();
+        renderAll();
+        showToast(`स्थिती: ${slip.paymentStatus === 'paid' ? 'जमा झाली (Paid)' : 'येणे बाकी (Pending)'}`);
+      }
+    }
+
+    function deleteSlip(id) {
+      if (confirm('तुम्हाला ही तोडणी पावती नक्की डिलीट करायची आहे का? (Delete this slip?)')) {
+        state.slips = state.slips.filter(s => s.id !== id);
+        saveSlips();
+        renderAll();
+        showToast('पावती डिलीट केली! (Slip Deleted)');
+      }
+    }
+
+    // ==========================================
+    // 3. EXPENSES & MAINTENANCE MODULE
+    // ==========================================
+    function switchExpenseSubTab(subTab) {
+      state.currentExpenseSubTab = subTab;
+      const tabs = ['all', 'diesel', 'spares', 'labor', 'tractor'];
+      tabs.forEach(t => {
+        const btn = document.getElementById(`expTab-${t}`);
+        if (t === subTab) {
+          btn.className = 'px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition whitespace-nowrap bg-amber-600 text-white shadow';
+        } else {
+          btn.className = 'px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition whitespace-nowrap bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800';
+        }
+      });
+      renderExpensesList();
+    }
+
+    function renderExpensesList() {
+      const container = document.getElementById('expensesContainer');
+      const query = (document.getElementById('expenseSearchInput')?.value || '').toLowerCase().trim();
+      const currentTab = state.currentExpenseSubTab;
+
+      const filtered = state.expenses.filter(e => {
+        const matchesTab = currentTab === 'all' || e.category === currentTab;
+        const matchesQuery = !query ||
+          (e.title && e.title.toLowerCase().includes(query)) ||
+          (e.billNo && e.billNo.toLowerCase().includes(query)) ||
+          (e.laborStaffName && e.laborStaffName.toLowerCase().includes(query)) ||
+          (e.spareVendor && e.spareVendor.toLowerCase().includes(query)) ||
+          (e.dieselPump && e.dieselPump.toLowerCase().includes(query)) ||
+          (e.tractorRegNo && e.tractorRegNo.toLowerCase().includes(query));
+
+        return matchesTab && matchesQuery;
+      });
+
+      const totalAmount = filtered.reduce((acc, e) => acc + (parseFloat(e.amount) || 0), 0);
+      document.getElementById('expenseCountDisplay').innerText = filtered.length;
+      document.getElementById('expenseTotalAmountDisplay').innerText = formatCurrency(totalAmount);
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 text-center text-slate-400">
+            <p class="text-3xl mb-2">💸</p>
+            <p class="text-sm font-semibold">कोणतीही खर्च नोंद सापडली नाही</p>
+            <p class="text-xs text-slate-500 mt-1">नवीन खर्च नोंदवण्यासाठी '+ नवीन खर्च नोंद' बटण दाबा.</p>
+          </div>
+        `;
+        return;
+      }
+
+      // Sort by date descending
+      filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+      const categoryIcons = {
+        diesel: '⛽ डिझेल',
+        spares: '🛠 स्पेअर्स',
+        labor: '👷 स्टाफ/उचल',
+        tractor: '🚜 इनफिल्डर'
+      };
+
+      const categoryColors = {
+        diesel: 'text-amber-400 bg-amber-950/80 border-amber-800',
+        spares: 'text-orange-400 bg-orange-950/80 border-orange-800',
+        labor: 'text-rose-400 bg-rose-950/80 border-rose-800',
+        tractor: 'text-purple-400 bg-purple-950/80 border-purple-800'
+      };
+
+      container.innerHTML = filtered.map(exp => {
+        let metaHtml = '';
+        if (exp.category === 'diesel') {
+          metaHtml = `
+            <span>⛽ ${exp.dieselLiters || 0} L @ ₹${exp.dieselRate || 0}</span>
+            ${exp.dieselHourMeter ? `<span>• मीटर: ${exp.dieselHourMeter}</span>` : ''}
+            ${exp.dieselPump ? `<span>• पंप: ${escapeHtml(exp.dieselPump)}</span>` : ''}
+          `;
+        } else if (exp.category === 'spares') {
+          metaHtml = `
+            <span>${escapeHtml(exp.spareCategory || 'पार्ट्स')}</span>
+            ${exp.spareVendor ? `<span>• दुकान: ${escapeHtml(exp.spareVendor)}</span>` : ''}
+          `;
+        } else if (exp.category === 'labor') {
+          metaHtml = `
+            <span>👷 ${escapeHtml(exp.laborStaffName || 'स्टाफ')} (${escapeHtml(exp.laborRole || 'रोल')})</span>
+            <span>• ${escapeHtml(exp.laborPaymentType || 'उचल')}</span>
+          `;
+        } else if (exp.category === 'tractor') {
+          metaHtml = `
+            <span>🚜 ${escapeHtml(exp.tractorRegNo || 'ट्रॅक्टर')}</span>
+            ${exp.tractorDriverName ? `<span>• ड्रायव्हर: ${escapeHtml(exp.tractorDriverName)}</span>` : ''}
+            <span>• ${escapeHtml(exp.tractorExpenseType || '')}</span>
+          `;
+        }
+
+        return `
+          <div class="bg-slate-900 border border-slate-800 hover:border-slate-700 p-4 rounded-2xl shadow-sm transition space-y-2.5">
+            <div class="flex items-start justify-between gap-2">
+              <div class="min-w-0">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded border ${categoryColors[exp.category] || 'text-slate-300'}">
+                    ${categoryIcons[exp.category] || exp.category}
+                  </span>
+                  <span class="text-xs text-slate-400">📅 ${exp.date}</span>
+                  ${exp.billNo ? `<span class="text-[10px] text-slate-500 font-mono">बिल: #${escapeHtml(exp.billNo)}</span>` : ''}
+                </div>
+                <h4 class="text-sm sm:text-base font-bold text-white mt-1.5 truncate">
+                  ${escapeHtml(exp.title || 'खर्च')}
+                </h4>
+              </div>
+
+              <!-- Expense Amount -->
+              <div class="text-right flex-shrink-0">
+                <div class="text-base sm:text-lg font-extrabold text-rose-400">
+                  - ${formatCurrency(exp.amount || 0)}
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between text-[11px] pt-2 border-t border-slate-800 text-slate-400">
+              <div class="flex items-center gap-2 flex-wrap">
+                ${metaHtml}
+              </div>
+
+              <div class="flex items-center gap-1.5 flex-shrink-0">
+                <button onclick="editExpense('${exp.id}')" title="दुरुस्ती करा (Edit)" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-400">
+                  ✏️
+                </button>
+                <button onclick="deleteExpense('${exp.id}')" title="डिलीट करा (Delete)" class="p-1.5 rounded-lg bg-slate-800 hover:bg-rose-900/60 text-rose-400">
+                  🗑️
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openExpenseModal(categoryPreset = 'diesel', expenseToEdit = null) {
+      const modal = document.getElementById('expenseModal');
+      const form = document.getElementById('expenseForm');
+      form.reset();
+
+      if (expenseToEdit) {
+        document.getElementById('expenseModalTitle').innerText = 'खर्च नोंद दुरुस्त करा (Edit Expense)';
+        document.getElementById('expenseId').value = expenseToEdit.id;
+        document.getElementById('expenseDate').value = expenseToEdit.date;
+        document.getElementById('expenseBillNo').value = expenseToEdit.billNo || '';
+        document.getElementById('expenseTitle').value = expenseToEdit.title;
+        document.getElementById('expenseAmount').value = expenseToEdit.amount;
+
+        // Set radio
+        const radio = form.querySelector(`input[name="expenseCategory"][value="${expenseToEdit.category}"]`);
+        if (radio) radio.checked = true;
+
+        // Category specific
+        if (expenseToEdit.category === 'diesel') {
+          document.getElementById('dieselLiters').value = expenseToEdit.dieselLiters || '';
+          document.getElementById('dieselRate').value = expenseToEdit.dieselRate || 92.50;
+          document.getElementById('dieselHourMeter').value = expenseToEdit.dieselHourMeter || '';
+          document.getElementById('dieselPump').value = expenseToEdit.dieselPump || '';
+        } else if (expenseToEdit.category === 'spares') {
+          document.getElementById('spareCategory').value = expenseToEdit.spareCategory || '';
+          document.getElementById('spareVendor').value = expenseToEdit.spareVendor || '';
+        } else if (expenseToEdit.category === 'labor') {
+          document.getElementById('laborStaffName').value = expenseToEdit.laborStaffName || '';
+          document.getElementById('laborRole').value = expenseToEdit.laborRole || 'मुख्य ऑपरेटर (Main Operator)';
+          document.getElementById('laborPaymentType').value = expenseToEdit.laborPaymentType || 'Advance (उचल)';
+        } else if (expenseToEdit.category === 'tractor') {
+          document.getElementById('tractorRegNo').value = expenseToEdit.tractorRegNo || '';
+          document.getElementById('tractorDriverName').value = expenseToEdit.tractorDriverName || '';
+          document.getElementById('tractorExpenseType').value = expenseToEdit.tractorExpenseType || 'ट्रॅक्टर डिझेल (Tractor Diesel)';
+        }
+      } else {
+        document.getElementById('expenseModalTitle').innerText = 'खर्च व देखभाल नोंद (Expense Entry)';
+        document.getElementById('expenseId').value = '';
+        setupDateDefaults();
+        const radio = form.querySelector(`input[name="expenseCategory"][value="${categoryPreset}"]`);
+        if (radio) radio.checked = true;
+      }
+
+      updateExpenseFormFields();
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeExpenseModal() {
+      const modal = document.getElementById('expenseModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function updateExpenseFormFields() {
+      const form = document.getElementById('expenseForm');
+      const selected = form.querySelector('input[name="expenseCategory"]:checked')?.value || 'diesel';
+
+      document.getElementById('fieldsDiesel').classList.toggle('hidden', selected !== 'diesel');
+      document.getElementById('fieldsSpares').classList.toggle('hidden', selected !== 'spares');
+      document.getElementById('fieldsLabor').classList.toggle('hidden', selected !== 'labor');
+      document.getElementById('fieldsTractor').classList.toggle('hidden', selected !== 'tractor');
+
+      const modalIcon = document.getElementById('expenseModalIcon');
+      if (selected === 'diesel') modalIcon.innerText = '⛽';
+      else if (selected === 'spares') modalIcon.innerText = '🛠';
+      else if (selected === 'labor') modalIcon.innerText = '👷';
+      else if (selected === 'tractor') modalIcon.innerText = '🚜';
+    }
+
+    function calcDieselTotal() {
+      const liters = parseFloat(document.getElementById('dieselLiters').value) || 0;
+      const rate = parseFloat(document.getElementById('dieselRate').value) || 0;
+      if (liters > 0 && rate > 0) {
+        const total = (liters * rate).toFixed(2);
+        document.getElementById('expenseAmount').value = total;
+        if (!document.getElementById('expenseTitle').value) {
+          document.getElementById('expenseTitle').value = `डिझेल ${liters} लिटर भरले`;
+        }
+      }
+    }
+
+    function handleSaveExpense(e) {
+      e.preventDefault();
+      const form = document.getElementById('expenseForm');
+      const id = document.getElementById('expenseId').value || 'exp-' + Date.now();
+      const category = form.querySelector('input[name="expenseCategory"]:checked')?.value || 'diesel';
+      const amount = parseFloat(document.getElementById('expenseAmount').value) || 0;
+
+      const expenseData = {
+        id,
+        category,
+        date: document.getElementById('expenseDate').value,
+        billNo: document.getElementById('expenseBillNo').value.trim(),
+        title: document.getElementById('expenseTitle').value.trim(),
+        amount
+      };
+
+      if (category === 'diesel') {
+        expenseData.dieselLiters = parseFloat(document.getElementById('dieselLiters').value) || 0;
+        expenseData.dieselRate = parseFloat(document.getElementById('dieselRate').value) || 0;
+        expenseData.dieselHourMeter = parseFloat(document.getElementById('dieselHourMeter').value) || null;
+        expenseData.dieselPump = document.getElementById('dieselPump').value.trim();
+      } else if (category === 'spares') {
+        expenseData.spareCategory = document.getElementById('spareCategory').value;
+        expenseData.spareVendor = document.getElementById('spareVendor').value.trim();
+      } else if (category === 'labor') {
+        expenseData.laborStaffName = document.getElementById('laborStaffName').value.trim();
+        expenseData.laborRole = document.getElementById('laborRole').value;
+        expenseData.laborPaymentType = document.getElementById('laborPaymentType').value;
+      } else if (category === 'tractor') {
+        expenseData.tractorRegNo = document.getElementById('tractorRegNo').value.trim();
+        expenseData.tractorDriverName = document.getElementById('tractorDriverName').value.trim();
+        expenseData.tractorExpenseType = document.getElementById('tractorExpenseType').value;
+      }
+
+      const existingIndex = state.expenses.findIndex(exp => exp.id === id);
+      if (existingIndex >= 0) {
+        state.expenses[existingIndex] = expenseData;
+        showToast('खर्च नोंद अपडेट केली! (Expense Updated)');
+      } else {
+        state.expenses.unshift(expenseData);
+        showToast('नवीन खर्च नोंद सेव्ह झाली! (Expense Saved)');
+      }
+
+      saveExpenses();
+      closeExpenseModal();
+      renderAll();
+    }
+
+    function editExpense(id) {
+      const exp = state.expenses.find(e => e.id === id);
+      if (exp) openExpenseModal(exp.category, exp);
+    }
+
+    function deleteExpense(id) {
+      if (confirm('तुम्हाला ही खर्च नोंद नक्की डिलीट करायची आहे का? (Delete this expense?)')) {
+        state.expenses = state.expenses.filter(e => e.id !== id);
+        saveExpenses();
+        renderAll();
+        showToast('खर्च नोंद डिलीट केली! (Expense Deleted)');
+      }
+    }
+
+    // ==========================================
+    // 4. FILTERABLE LEDGER & REPORTS MODULE
+    // ==========================================
+    function applyLedgerDatePreset() {
+      const preset = document.getElementById('ledgerDatePreset').value;
+      const startInput = document.getElementById('ledgerStartDate');
+      const endInput = document.getElementById('ledgerEndDate');
+      const now = new Date();
+
+      if (preset === 'all') {
+        startInput.value = '';
+        endInput.value = '';
+      } else if (preset === 'today') {
+        const todayStr = now.toISOString().split('T')[0];
+        startInput.value = todayStr;
+        endInput.value = todayStr;
+      } else if (preset === 'this_week') {
+        const firstDay = new Date(now.setDate(now.getDate() - now.getDay()));
+        const lastDay = new Date(firstDay);
+        lastDay.setDate(lastDay.getDate() + 6);
+        startInput.value = firstDay.toISOString().split('T')[0];
+        endInput.value = lastDay.toISOString().split('T')[0];
+      } else if (preset === 'this_month') {
+        const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+        const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+        startInput.value = firstDay.toISOString().split('T')[0];
+        endInput.value = lastDay.toISOString().split('T')[0];
+      }
+      renderLedger();
+    }
+
+    function getFilteredLedgerTransactions() {
+      const startDate = document.getElementById('ledgerStartDate')?.value;
+      const endDate = document.getElementById('ledgerEndDate')?.value;
+      const factory = document.getElementById('ledgerFactoryFilter')?.value;
+
+      // Filter Slips
+      const filteredSlips = state.slips.filter(s => {
+        if (startDate && s.date < startDate) return false;
+        if (endDate && s.date > endDate) return false;
+        if (factory && s.factory !== factory) return false;
+        return true;
+      });
+
+      // Filter Expenses (only if not restricted to factory, since expenses are machine-level)
+      const filteredExpenses = state.expenses.filter(e => {
+        if (startDate && e.date < startDate) return false;
+        if (endDate && e.date > endDate) return false;
+        return true;
+      });
+
+      // Map to unified transactions
+      const transactions = [];
+
+      filteredSlips.forEach(s => {
+        transactions.push({
+          id: s.id,
+          date: s.date,
+          type: 'harvest',
+          typeLabel: 'ऊस तोडणी',
+          desc: `${s.farmer} (${s.factory}) - ${s.tonnage} टन`,
+          ref: s.slipNumber || 'पावती',
+          credit: parseFloat(s.totalAmount) || 0,
+          debit: 0,
+          status: s.paymentStatus
+        });
+      });
+
+      filteredExpenses.forEach(e => {
+        let typeLabel = 'खर्च';
+        if (e.category === 'diesel') typeLabel = 'डिझेल';
+        else if (e.category === 'spares') typeLabel = 'स्पेअर्स';
+        else if (e.category === 'labor') typeLabel = 'स्टाफ उचल';
+        else if (e.category === 'tractor') typeLabel = 'इनफिल्डर';
+
+        transactions.push({
+          id: e.id,
+          date: e.date,
+          type: 'expense',
+          typeLabel,
+          desc: e.title,
+          ref: e.billNo || 'बिल',
+          credit: 0,
+          debit: parseFloat(e.amount) || 0,
+          status: 'paid'
+        });
+      });
+
+      // Sort chronological ascending to calculate running balance
+      transactions.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+      let runningBalance = 0;
+      transactions.forEach(t => {
+        runningBalance += (t.credit - t.debit);
+        t.balance = runningBalance;
+      });
+
+      return {
+        transactions,
+        filteredSlips,
+        filteredExpenses
+      };
+    }
+
+    function renderLedger() {
+      const { transactions, filteredSlips, filteredExpenses } = getFilteredLedgerTransactions();
+      const data = calculateTotals(filteredSlips, filteredExpenses);
+
+      // Render summary card
+      document.getElementById('ledgerSummaryCard').innerHTML = `
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+          <div>
+            <p class="text-slate-400">एकूण गाळप (Tonnage)</p>
+            <p class="text-base sm:text-lg font-bold text-emerald-400 mt-0.5">${data.totalTons.toFixed(2)} टन (${data.slipCount} पावत्या)</p>
+          </div>
+          <div>
+            <p class="text-slate-400">एकूण उत्पन्न (Revenue)</p>
+            <p class="text-base sm:text-lg font-bold text-white mt-0.5">${formatCurrency(data.totalRevenue)}</p>
+            <p class="text-[10px] text-amber-400">बाकी: ${formatCurrency(data.pendingRevenue)}</p>
+          </div>
+          <div>
+            <p class="text-slate-400">एकूण खर्च (Expenses)</p>
+            <p class="text-base sm:text-lg font-bold text-rose-400 mt-0.5">${formatCurrency(data.totalExpenses)}</p>
+            <p class="text-[10px] text-slate-500">डिझेल: ${formatCurrency(data.dieselCost)}</p>
+          </div>
+          <div>
+            <p class="text-slate-400">निव्वळ नफा (Net Margin)</p>
+            <p class="text-base sm:text-lg font-bold ${data.netProfit >= 0 ? 'text-emerald-400' : 'text-rose-500'} mt-0.5">
+              ${formatCurrency(data.netProfit)}
+            </p>
+            <p class="text-[10px] ${data.netProfit >= 0 ? 'text-emerald-300' : 'text-rose-400'}">${data.marginPercent}% नफा प्रमाण</p>
+          </div>
+        </div>
+      `;
+
+      // Render Table rows (descending for viewing latest first)
+      const tableBody = document.getElementById('ledgerTableBody');
+      document.getElementById('ledgerCountDisplay').innerText = `${transactions.length} व्यवहार`;
+
+      if (transactions.length === 0) {
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="7" class="p-6 text-center text-slate-500 font-sans">
+              या कालावधीत कोणतेही व्यवहार सापडले नाहीत.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      const displayList = [...transactions].reverse();
+
+      tableBody.innerHTML = displayList.map(t => {
+        const isHarvest = t.type === 'harvest';
+        return `
+          <tr class="hover:bg-slate-800/40 transition">
+            <td class="p-3 text-slate-300 whitespace-nowrap">${t.date}</td>
+            <td class="p-3">
+              <span class="px-2 py-0.5 rounded text-[10px] font-sans font-bold ${isHarvest ? 'bg-emerald-950 text-emerald-400 border border-emerald-800/60' : 'bg-amber-950 text-amber-400 border border-amber-800/60'}">
+                ${t.typeLabel}
+              </span>
+            </td>
+            <td class="p-3 text-white font-sans truncate max-w-xs">${escapeHtml(t.desc)}</td>
+            <td class="p-3 text-slate-400">${escapeHtml(t.ref)}</td>
+            <td class="p-3 text-right text-emerald-400 font-bold">${t.credit > 0 ? formatCurrency(t.credit) : '-'}</td>
+            <td class="p-3 text-right text-rose-400 font-bold">${t.debit > 0 ? formatCurrency(t.debit) : '-'}</td>
+            <td class="p-3 text-right font-bold ${t.balance >= 0 ? 'text-emerald-300' : 'text-rose-400'}">${formatCurrency(t.balance)}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // ==========================================
+    // 5. EXCEL (CSV) EXPORT MODULE (WITH UTF-8 BOM)
+    // ==========================================
+    function downloadCSV(csvContent, fileName) {
+      // Adding \uFEFF BOM for seamless Excel Marathi Unicode rendering
+      const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', fileName);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast('Excel CSV डाऊनलोड झाली! (Exported)');
+    }
+
+    function exportHarvestSlipsCSV() {
+      const headers = ['तारीख (Date)', 'काटा पावती क्र (Slip No)', 'कारखाना (Factory)', 'शेतकरी (Farmer)', 'गट क्र (Plot No)', 'गाळप वजन टन (Tonnage)', 'दर (Rate)', 'एकूण बिल (Total Amount)', 'मशीन अवर्स (Hours)', 'ट्रॅक्टर (Tractor)', 'पेमेंट स्थिती (Status)', 'शेरा (Remarks)'];
+      const rows = state.slips.map(s => [
+        `"${s.date}"`,
+        `"${s.slipNumber || ''}"`,
+        `"${s.factory || ''}"`,
+        `"${s.farmer || ''}"`,
+        `"${s.plotNo || ''}"`,
+        s.tonnage || 0,
+        s.rate || 0,
+        s.totalAmount || 0,
+        s.hours || 0,
+        `"${s.tractorNo || ''}"`,
+        s.paymentStatus === 'paid' ? 'जमा (Paid)' : 'येणे बाकी (Pending)',
+        `"${s.remarks || ''}"`
+      ]);
+
+      const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\r\n');
+      downloadCSV(csv, `ऊस_तोडणी_पावत्या_${new Date().toISOString().split('T')[0]}.csv`);
+    }
+
+    function exportExpensesCSV() {
+      const headers = ['तारीख (Date)', 'खर्च प्रकार (Category)', 'तपशील (Description)', 'बिल क्र (Bill No)', 'रक्कम (Amount)', 'लिटर (Liters)', 'डिझेल दर (Diesel Rate)', 'अवर्स रिडिंग (Meter)', 'दुकान/पंप/कर्मचारी (Vendor/Staff)'];
+      const rows = state.expenses.map(e => [
+        `"${e.date}"`,
+        `"${e.category}"`,
+        `"${e.title}"`,
+        `"${e.billNo || ''}"`,
+        e.amount || 0,
+        e.dieselLiters || '',
+        e.dieselRate || '',
+        e.dieselHourMeter || '',
+        `"${e.dieselPump || e.spareVendor || e.laborStaffName || e.tractorRegNo || ''}"`
+      ]);
+
+      const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\r\n');
+      downloadCSV(csv, `ऊस_हार्वेस्टर_खर्च_वही_${new Date().toISOString().split('T')[0]}.csv`);
+    }
+
+    function exportCombinedLedgerCSV() {
+      const { transactions } = getFilteredLedgerTransactions();
+      const headers = ['तारीख (Date)', 'प्रकार (Type)', 'तपशील (Description)', 'संदर्भ / बिल क्र (Ref No)', 'जमा उत्पन्न (Credit INR)', 'खर्च (Debit INR)', 'शिल्लक (Balance INR)'];
+      const rows = transactions.map(t => [
+        `"${t.date}"`,
+        `"${t.typeLabel}"`,
+        `"${t.desc}"`,
+        `"${t.ref}"`,
+        t.credit,
+        t.debit,
+        t.balance
+      ]);
+
+      const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\r\n');
+      downloadCSV(csv, `ऊस_तोडणी_संपूर्ण_ताळेबंद_${new Date().toISOString().split('T')[0]}.csv`);
+    }
+
+    // ==========================================
+    // 6. WHATSAPP SUMMARY GENERATOR
+    // ==========================================
+    function generateWhatsAppSummaryText() {
+      const { filteredSlips, filteredExpenses } = getFilteredLedgerTransactions();
+      const data = calculateTotals(filteredSlips, filteredExpenses);
+
+      const startDate = document.getElementById('ledgerStartDate')?.value || 'सुरुवातीपासून';
+      const endDate = document.getElementById('ledgerEndDate')?.value || 'आजपर्यंत';
+      const mName = state.settings.machineName || 'ऊस तोडणी मशीन';
+      const reg = state.settings.regNo ? `(${state.settings.regNo})` : '';
+
+      const text = 
+`🚜 *${mName} ${reg}*
+📊 *ऊस तोडणी हिशोब व ताळेबंद रिपोर्ट*
+━━━━━━━━━━━━━━━━━━━━━━
+📅 *कालावधी:* ${startDate} ते ${endDate}
+🌾 *हंगाम:* ${state.settings.season || '2026-27'}
+
+🌱 *१. गाळप व उत्पन्न (Harvest & Bill):*
+▪ एकूण गाळप: *${data.totalTons.toFixed(2)} टन*
+▪ एकूण पावत्या: *${data.slipCount}*
+▪ एकूण बिल रक्कम: *${formatCurrency(data.totalRevenue)}*
+▪ प्रत्यक्षात जमा: *${formatCurrency(data.paidRevenue)}*
+⏳ कारखान्याकडे बाकी: *${formatCurrency(data.pendingRevenue)}*
+⏱ एकूण मशीन तास: *${data.totalEngineHours.toFixed(1)} तास* (${data.tonsPerHour} टन/तास)
+
+⛽ *२. इंधन व कार्यक्षमता (Diesel Index):*
+▪ एकूण डिझेल: *${Math.round(data.dieselLiters)} लिटर*
+▪ सरासरी/टन: *${data.dieselPerTon} L/Ton*
+▪ सरासरी/तास: *${data.dieselPerHour} L/Hour*
+▪ डिझेल खर्च: *${formatCurrency(data.dieselCost)}*
+
+🛠 *३. खर्च तपशील (Expenses Breakdown):*
+▪ डिझेल खर्च: ${formatCurrency(data.dieselCost)}
+▪ स्पेअर पार्ट्स व दुरुस्ती: ${formatCurrency(data.sparesCost)}
+▪ ड्रायव्हर/स्टाफ उचल व पगार: ${formatCurrency(data.laborCost)}
+▪ इनफिल्डर/ट्रॅक्टर खर्च: ${formatCurrency(data.tractorCost)}
+🔴 *एकूण खर्च: ${formatCurrency(data.totalExpenses)}*
+
+💰 *४. निव्वळ नफा-तोटा (Net P&L):*
+🏆 *निव्वळ नफा (Net Profit): ${formatCurrency(data.netProfit)}*
+📈 नफा मार्जिन: *${data.marginPercent}%*
+💵 निव्वळ नफा प्रति टन: *₹ ${data.profitPerTon} / टन*
+━━━━━━━━━━━━━━━━━━━━━━
+_तयार केले: ऊस तोडणी डिजिटल डायरी ॲप (Offline PWA)_`;
+
+      return text;
+    }
+
+    function openWhatsAppModal() {
+      const summaryText = generateWhatsAppSummaryText();
+      document.getElementById('whatsAppTextPreview').value = summaryText;
+      const modal = document.getElementById('whatsAppModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeWhatsAppModal() {
+      const modal = document.getElementById('whatsAppModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function copyWhatsAppText() {
+      const text = document.getElementById('whatsAppTextPreview').value;
+      navigator.clipboard.writeText(text).then(() => {
+        showToast('मेसेज कॉपी झाला! आता WhatsApp वर पेस्ट करा.');
+      }).catch(() => {
+        showToast('कॉपी करता आले नाही, मॅन्युअली सिलेक्ट करा.');
+      });
+    }
+
+    function sendToWhatsAppNow() {
+      const text = document.getElementById('whatsAppTextPreview').value;
+      const encoded = encodeURIComponent(text);
+      window.open(`https://api.whatsapp.com/send?text=${encoded}`, '_blank');
+    }
+
+    // ==========================================
+    // 7. BACKUP, RESTORE & SETTINGS MODULE
+    // ==========================================
+    function saveMachineSettings() {
+      state.settings.machineName = document.getElementById('settingMachineName').value.trim() || 'John Deere 3522';
+      state.settings.regNo = document.getElementById('settingMachineReg').value.trim() || '';
+      state.settings.defaultRate = parseFloat(document.getElementById('settingDefaultRate').value) || 450;
+      state.settings.season = document.getElementById('settingSeason').value.trim() || '2026-27';
+
+      saveSettings();
+      renderDashboard();
+      showToast('सेटिंग्ज सेव्ह केल्या! (Settings Saved)');
+    }
+
+    function exportJSONBackup() {
+      const backupData = {
+        version: '1.0',
+        exportDate: new Date().toISOString(),
+        settings: state.settings,
+        slips: state.slips,
+        expenses: state.expenses
+      };
+
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `ऊस_तोडणी_बॅकअप_${new Date().toISOString().split('T')[0]}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      showToast('बॅकअप फाईल सेव्ह झाली! (Backup Downloaded)');
+    }
+
+    function importJSONBackup(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const imported = JSON.parse(e.target.result);
+          if (imported.slips && Array.isArray(imported.slips)) {
+            state.slips = imported.slips;
+            saveSlips();
+          }
+          if (imported.expenses && Array.isArray(imported.expenses)) {
+            state.expenses = imported.expenses;
+            saveExpenses();
+          }
+          if (imported.settings) {
+            state.settings = imported.settings;
+            saveSettings();
+          }
+          populateFactoryDropdowns();
+          renderAll();
+          showToast('डेटा यशस्वीरीत्या रिस्टोअर झाला! (Restored)');
+        } catch (err) {
+          alert('अवैध बॅकअप फाईल! कृपया योग्य JSON फाईल निवडा.');
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = '';
+    }
+
+    function loadSampleData(confirmPrompt = true) {
+      if (!confirmPrompt || confirm('नमुना डेटा पुन्हा लोड करायचा आहे का? (Reset with sample data?)')) {
+        state.slips = [...SAMPLE_SLIPS];
+        state.expenses = [...SAMPLE_EXPENSES];
+        state.settings = { ...SAMPLE_SETTINGS };
+        saveSlips();
+        saveExpenses();
+        saveSettings();
+        populateFactoryDropdowns();
+        renderAll();
+        showToast('नमुना डेटा भरला गेला! (Sample Data Loaded)');
+      }
+    }
+
+    function clearAllData() {
+      if (confirm('⚠️ सावधान! तुम्ही सर्व तोडणी पावत्या व खर्च डेटा कायमचा हटवू इच्छिता का? हा डेटा परत मिळणार नाही.')) {
+        state.slips = [];
+        state.expenses = [];
+        saveSlips();
+        saveExpenses();
+        populateFactoryDropdowns();
+        renderAll();
+        showToast('सर्व डेटा साफ करण्यात आला!');
+      }
+    }
+
+    // ==========================================
+    // 8. HELPERS, TOAST & SERVICE WORKER
+    // ==========================================
+    function showToast(msg, icon = '✅') {
+      const toast = document.getElementById('toastNotification');
+      document.getElementById('toastMessage').innerText = msg;
+      document.getElementById('toastIcon').innerText = icon;
+      toast.classList.remove('-translate-y-16', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      setTimeout(() => {
+        toast.classList.add('-translate-y-16', 'opacity-0');
+        toast.classList.remove('translate-y-0', 'opacity-100');
+      }, 3000);
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function registerServiceWorker() {
+      if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('SW Registered for Sugarcane Harvester PWA:', reg.scope))
+          .catch(err => console.log('SW Registration skipped/failed:', err));
+      }
+    }
+
+    // Run on startup
+    window.addEventListener('DOMContentLoaded', initApp);
+  </script>
+</body>
+</html>

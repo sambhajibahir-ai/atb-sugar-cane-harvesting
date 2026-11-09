@@ -1,0 +1,8 @@
+Part 3: Key Features You Can Pitch or Add for Your Friend
+If you build this for your friend (or turn it into a SaaS product for other harvester owners in Maharashtra), these three domain-specific features make a huge difference:
+
+Chopper & Base Cutter Blade Alerts: Harvester blades wear out after a specific number of tons/hours. Adding a simple counter that alerts the owner "300 Tons completed since last Chopper Blade change" saves massive fuel and breakdown costs.
+
+Karkhana (Factory) Bill Reconciliation: Sugar mills pay in 15-day Pandarwada (पंधरवडा) cycles and often deduct diesel or transport advances directly from the bill. Adding a 15-Day Bill Settlement view helps the owner verify if the factory's tonnage total matches their own slip records.
+
+Tractor / Infielder Linking: A sugarcane harvester usually operates alongside 2 to 3 tractors with tipping trailers. Allowing the owner to tag diesel expenses to Harvester, Tractor 1, or Tractor 2 helps pinpoint which vehicle is burning excess fuel.
